@@ -2,6 +2,16 @@
 
 Manager de futebol no navegador: **Brasileirão (Séries A–D)**, **Copa do Brasil**, evolução de elenco e PWA offline. Arquivo de jogo único (`index.html`), sem build.
 
+## Screenshots
+
+<p align="center">
+  <img src="screenshots/menu.png" alt="Menu inicial do Astrum Football Manager" width="49%">
+  <img src="screenshots/carreira.png" alt="Painel principal de uma carreira no jogo" width="49%">
+</p>
+<p align="center">
+  <img src="screenshots/classificacao.png" alt="Classifica??o da S?rie D dentro do jogo" width="80%">
+</p>
+
 ## Novidades da v3.0
 
 | Área | O que mudou |
