@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="description" content="Manager de futebol brasileiro no navegador: Séries A–D, Copa do Brasil, evolução de elenco e PWA offline.">
 <meta name="format-detection" content="telephone=no">
-<title>Astrum Football Manager — Edição Brasil v3.0</title>
+<title>Astrum Football Manager — Edição Brasil v4.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -31,20 +31,47 @@
                       radial-gradient(circle at 90% 100%, rgba(255,202,40,0.03), transparent 40%);
   }
   .mono { font-family: 'JetBrains Mono', monospace; }
-  #app { max-width: 1140px; margin: 0 auto; padding: 12px; }
+  /* ===== MODO DOS TELA TOTAL (DESKTOP & MOBILE 100% VISÍVEL) ===== */
+  body.dos-classic {
+    --bg: #000b14; --panel: #041626; --panel-alt: #082238; --border: #29b6f6;
+    --accent: #00ff66; --accent-dark: #003b18; --accent2: #ffff00;
+    --text: #f0f8ff; --dim: #7ec8e3;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  #app {
+    width: 100%; max-width: 100vw; min-height: calc(100dvh - 50px);
+    margin: 0; padding: 6px 10px; display: flex; flex-direction: column;
+  }
+
+  .dos-sysbar {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: 6px; padding: 5px 10px; margin-bottom: 6px;
+    background: linear-gradient(90deg, #003d1f 0%, #0d2336 50%, #003d1f 100%);
+    border: 2px solid var(--accent); border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; font-weight: 700;
+    color: var(--accent); letter-spacing: 0.5px;
+  }
+  .dos-sysbar .sys-actions { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+  .dos-sysbar .sys-btn {
+    background: #061017; border: 1px solid var(--accent); color: var(--text);
+    padding: 3px 8px; border-radius: 3px; cursor: pointer; font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem; font-weight: 700;
+  }
+  .dos-sysbar .sys-btn:hover { background: var(--accent); color: #000; }
 
   .topbar {
-    display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
-    background: linear-gradient(135deg, #101a22, #0b1319);
-    border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center;
+    background: linear-gradient(180deg, #12202b 0%, #0a1219 100%);
+    border: 2px solid var(--border); border-radius: 5px; padding: 8px 12px; margin-bottom: 6px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.45);
   }
-  .topbar .team-name { font-size: 1.15rem; color: var(--accent); font-weight: 800; letter-spacing: 0.3px; }
-  .topbar .meta { color: var(--dim); font-size: .84rem; }
-  .topbar .money { color: var(--accent2); font-weight: 700; font-size: .98rem; }
+  .topbar .team-name { font-size: 1.12rem; color: var(--accent); font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; font-family: 'JetBrains Mono', monospace; }
+  .topbar .meta { color: var(--dim); font-size: .82rem; font-family: 'JetBrains Mono', monospace; }
+  .topbar .money { color: var(--accent2); font-weight: 700; font-size: .95rem; background: rgba(255,202,40,0.12); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(255,202,40,0.4); }
   .badge {
-    display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: .72rem;
+    display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: .72rem;
     font-weight: 700; background: #1a2a3a; text-transform: uppercase; letter-spacing: 0.5px;
+    font-family: 'JetBrains Mono', monospace;
   }
   .badge.a { background: linear-gradient(135deg,#3d2e00,#5c4600); color: var(--serie-a); border: 1px solid #806000; }
   .badge.b { background: linear-gradient(135deg,#102a45,#0d2038); color: #90caf9; border: 1px solid #1e4976; }
@@ -53,8 +80,8 @@
   .badge.cup { background: linear-gradient(135deg,#4a148c,#2a0d5a); color: #e040fb; border: 1px solid #6b21a8; }
 
   .season-bar {
-    height: 6px; background: #141d28; border-radius: 4px; margin: 0 0 12px;
-    overflow: hidden; border: 1px solid #1e2c3d;
+    height: 6px; background: #0d161e; border-radius: 2px; margin: 0 0 8px;
+    overflow: hidden; border: 1px solid var(--border);
   }
   .season-bar .fill {
     height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2));
@@ -62,8 +89,8 @@
   }
 
   .autoplay-bar {
-    background: linear-gradient(90deg, rgba(0,61,31,0.92), rgba(20,42,62,0.92));
-    border: 1px solid var(--accent); border-radius: 12px; padding: 10px 14px; margin-bottom: 12px;
+    background: linear-gradient(90deg, rgba(0,61,31,0.95), rgba(20,42,62,0.95));
+    border: 2px solid var(--accent); border-radius: 5px; padding: 8px 12px; margin-bottom: 8px;
     display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
     box-shadow: 0 0 20px rgba(0,230,118,0.18);
   }
@@ -77,19 +104,50 @@
     50% { transform: scale(1.35); opacity: 0.55; }
   }
 
-  .nav-wrap { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  /* GRADE DE MENU ESTILO DOS / MANAGER: 100% DOS BOTÕES SEMPRE VISÍVEIS NA TELA */
+  .nav-wrap {
+    display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px;
+    background: #081118; border: 2px solid var(--border); border-radius: 6px; padding: 6px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+  }
   .nav {
-    display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px;
-    scrollbar-width: none; -ms-overflow-style: none; flex: 1; -webkit-overflow-scrolling: touch;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 5px;
+    width: 100%;
+    overflow: visible;
   }
-  .nav::-webkit-scrollbar { display: none; }
+  @media (min-width: 1360px) {
+    .nav { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+  }
+  .cmd-bar {
+    display: grid;
+    grid-template-columns: 1.6fr 1.2fr 1fr 1fr 1fr 1fr;
+    gap: 5px;
+    width: 100%;
+    padding-top: 6px;
+    border-top: 1px dashed var(--border);
+  }
+  @media (max-width: 768px) {
+    .nav { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; }
+    .cmd-bar { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+  }
+  @media (max-width: 540px) {
+    .nav { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
+    .cmd-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
+  }
+
   .nav button, .btn {
-    background: var(--panel); border: 1px solid var(--border); color: var(--text);
-    padding: 9px 13px; border-radius: 8px; cursor: pointer; font-size: .85rem;
-    font-weight: 600; transition: all .15s ease; display: inline-flex;
-    align-items: center; justify-content: center; gap: 6px; white-space: nowrap;
-    flex-shrink: 0; min-height: 40px;
+    background: linear-gradient(180deg, #162634 0%, #0d1720 100%);
+    border: 1px solid #2d4960; border-bottom-width: 2px; color: var(--text);
+    padding: 8px 6px; border-radius: 4px; cursor: pointer; font-size: .82rem;
+    font-weight: 700; transition: all .12s ease; display: inline-flex;
+    align-items: center; justify-content: center; gap: 5px;
+    min-height: 40px; width: 100%; text-align: center; line-height: 1.15;
   }
+  .btn { width: auto; padding: 8px 12px; white-space: nowrap; }
+  .cmd-bar .btn { width: 100%; padding: 8px 6px; font-size: 0.8rem; }
+  .nav button .nav-label { white-space: normal; word-break: keep-all; }
   .nav button:hover, .btn:hover { border-color: var(--accent); color: var(--accent); background: #14222e; }
   .nav button:active, .btn:active { transform: scale(0.97); }
   .nav button.active {
@@ -164,15 +222,22 @@
   .bar-form > div { background: linear-gradient(90deg,#29b6f6,#81d4fa); }
   .bar-conf > div { background: linear-gradient(90deg,#ffca28,#ffd54f); }
 
-  /* Title screen */
-  .title-screen { text-align: center; padding: 28px 14px; }
-  .title-screen h1 {
-    font-size: clamp(1.6rem, 5vw, 2.45rem); color: var(--accent); font-weight: 800;
-    text-shadow: 0 0 24px rgba(0,230,118,.35); margin-bottom: 6px; letter-spacing: 0.6px;
+  /* Title screen (Full-screen DOS Manager style) */
+  .title-screen {
+    text-align: center; padding: 24px 16px; flex: 1;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    border: 2px solid var(--border); border-radius: 6px;
+    background: radial-gradient(circle at center, #0f221b 0%, #070d12 75%);
+    min-height: calc(100dvh - 70px);
   }
-  .title-screen .sub { color: var(--dim); margin-bottom: 24px; font-size: 0.92rem; }
-  .title-screen .logo { font-size: 3.8rem; margin-bottom: 8px; filter: drop-shadow(0 0 14px rgba(0,230,118,0.35)); }
-  .menu-list { list-style: none; max-width: 360px; margin: 0 auto; }
+  .title-screen h1 {
+    font-size: clamp(1.5rem, 4.5vw, 2.5rem); color: var(--accent); font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+    text-shadow: 0 0 24px rgba(0,230,118,.35); margin-bottom: 6px; letter-spacing: 1px;
+  }
+  .title-screen .sub { color: var(--dim); margin-bottom: 20px; font-size: 0.9rem; max-width: 720px; }
+  .title-screen .logo { font-size: 3.4rem; margin-bottom: 6px; filter: drop-shadow(0 0 14px rgba(0,230,118,0.35)); }
+  .menu-list { list-style: none; width: 100%; max-width: 480px; margin: 0 auto; }
   .menu-list li {
     padding: 14px 16px; margin: 10px 0; background: var(--panel);
     border: 1px solid var(--border); border-radius: 10px; cursor: pointer;
@@ -341,13 +406,16 @@
   }
   .offer-input { font-size: 16px !important; min-height: 40px; }
   @media (max-width: 768px) {
-    #app { padding: 10px 10px 4px; }
-    .topbar { padding: 10px 12px; border-radius: 14px; gap: 8px; position: sticky; top: 0; z-index: 50; }
-    .topbar .team-name { font-size: 1.05rem; }
-    .nav button, .btn {
-      min-height: 44px; padding: 10px 14px; font-size: 0.88rem; border-radius: 10px;
+    #app { padding: 6px 6px 4px; }
+    .topbar { padding: 8px 10px; border-radius: 5px; gap: 6px; }
+    .topbar .team-name { font-size: 0.98rem; }
+    .nav button {
+      min-height: 40px; padding: 6px 6px; font-size: 0.78rem; border-radius: 4px;
     }
-    .btn.sm { min-height: 40px; padding: 8px 12px; }
+    .btn {
+      min-height: 40px; padding: 8px 10px; font-size: 0.82rem; border-radius: 4px;
+    }
+    .btn.sm { min-height: 36px; padding: 6px 9px; font-size: 0.76rem; }
     .card { border-radius: 14px; padding: 12px; }
     th, td { padding: 12px 8px; }
     .menu-list li { padding: 16px 18px; min-height: 52px; border-radius: 12px; font-size: 1rem; }
@@ -385,6 +453,70 @@
     padding: 10px 0; border-bottom: 1px solid #1a2530; flex-wrap: wrap;
   }
 
+
+  /* ===== v4.0: Estádio, Estimativa de Renda, Competições, Premiações e Troféus ===== */
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  @media (max-width: 860px) {
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px) {
+    .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  }
+  .subnav {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+    gap: 6px; margin-bottom: 12px; padding: 6px;
+    background: #081118; border: 1px solid var(--border); border-radius: 5px;
+  }
+  .subnav .btn { width: 100%; justify-content: center; white-space: normal; text-align: center; }
+  .kpi-box {
+    background: #0a1218; border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px 12px; display: flex; flex-direction: column; gap: 4px;
+  }
+  .kpi-box .kpi-label { font-size: 0.74rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.4px; }
+  .kpi-box .kpi-val { font-size: 1.08rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+  .kpi-box .kpi-sub { font-size: 0.75rem; color: var(--dim); }
+  .stadium-Arena-wrap {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: radial-gradient(circle at center, #11241a 0%, #091117 75%);
+    border: 1px solid var(--border); border-radius: 12px; padding: 14px; position: relative;
+  }
+  .trophy-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px;
+  }
+  .trophy-card {
+    background: linear-gradient(145deg, #16222c, #0c141b);
+    border: 1px solid #3d3112; border-radius: 10px; padding: 12px;
+    display: flex; align-items: center; gap: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: transform 0.15s, border-color 0.15s;
+  }
+  .trophy-card:hover { transform: translateY(-2px); border-color: var(--gold); }
+  .trophy-card.locked { opacity: 0.48; border-color: var(--border); filter: grayscale(0.75); }
+  .trophy-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.55rem; flex-shrink: 0;
+    background: radial-gradient(circle, rgba(255,202,40,0.22), rgba(255,202,40,0.03));
+    border: 1px solid rgba(255,202,40,0.4);
+  }
+  .trophy-card.locked .trophy-icon {
+    background: #0a1218; border-color: var(--border);
+  }
+  .comp-card {
+    background: linear-gradient(160deg, #121e28 0%, #0b131a 100%);
+    border: 1px solid var(--border); border-radius: 12px; padding: 13px;
+    display: flex; flex-direction: column; justify-content: space-between; gap: 8px;
+  }
+  .comp-card.active-comp { border-color: var(--accent); box-shadow: 0 0 14px rgba(0,230,118,0.12); }
+  .comp-card.cont-comp { border-color: #29b6f6; }
+  .comp-card.super-comp { border-color: var(--gold); }
+  .badge.cont { background: linear-gradient(135deg,#082e4a,#0d47a1); color: #81d4fa; border: 1px solid #1976d2; }
+  .badge.super { background: linear-gradient(135deg,#4a3200,#7a5200); color: #ffe082; border: 1px solid #ffb300; }
+  .price-slider {
+    width: 100%; max-width: 280px; accent-color: var(--accent); cursor: pointer;
+  }
+
 </style>
 </head>
 <body>
@@ -399,7 +531,7 @@
    Pirâmide completa | Evolução de elenco | Agentes livres | Saves em slots | PWA
    ============================================================ */
 
-const APP_VERSION = "3.0";
+const APP_VERSION = "4.0";
 const SAVE_VERSION = 3;
 const SAVE_PREFIX = "afm_br_save_";
 const SQUAD_MAX = 30;
@@ -527,14 +659,97 @@ const KIT_COLORS = [
   "#43a047","#8e24aa","#ff6f00","#00acc1","#6d213c","#1565c0"
 ];
 
+
 const STADIUM_UPGRADES = [
-  { key: "seats", label: "+500 lugares", cost: 25000, desc: "Aumenta capacidade em 500" },
-  { key: "seatsFast", label: "+1000 rápido", cost: 75000, desc: "Expansão acelerada (+1000 lugares)" },
-  { key: "pitch", label: "Melhorar Gramado (+10%)", cost: 15000, desc: "Favorece o toque de bola em casa" },
-  { key: "facilities", label: "Melhorar CT e Loja (+10%)", cost: 20000, desc: "Aumenta receita por torcedor" },
-  { key: "medical", label: "DM / Fisioterapia (+10%)", cost: 12000, desc: "Reduz chance de lesões" },
-  { key: "press", label: "Marketing & Sócios (+10%)", cost: 10000, desc: "Melhora imagem e patrocínio" }
+  { key: "seats", label: "+500 lugares", cost: 25000, desc: "Amplia arquibancada em +500 lugares" },
+  { key: "seatsFast", label: "+1.000 lugares (Rápido)", cost: 75000, desc: "Expansão acelerada (+1.000 lugares)" },
+  { key: "seatsMega", label: "+5.000 lugares (Anel)", cost: 320000, desc: "Novo anel estrutural (+5.000 lugares)" },
+  { key: "pitch", label: "Gramado Padrão FIFA (+10%)", cost: 15000, desc: "Favorece o toque de bola e força em casa" },
+  { key: "facilities", label: "CT, Bares & Loja (+10%)", cost: 20000, desc: "Aumenta consumo de matchday por torcedor" },
+  { key: "vipBoxes", label: "Camarotes VIP & Lounge (+10%)", cost: 28000, desc: "Eleva receita corporativa nos jogos em casa" },
+  { key: "lighting", label: "Iluminação LED & Telão (+10%)", cost: 18000, desc: "Atrai mais público e valoriza o espetáculo" },
+  { key: "medical", label: "DM / Fisioterapia (+10%)", cost: 12000, desc: "Reduz risco de lesões no elenco" },
+  { key: "press", label: "Marketing & Sócios (+10%)", cost: 10000, desc: "Expande quadro de sócios e patrocínio" },
+  { key: "academy", label: "Centro de Base & Olheiros (+10%)", cost: 22000, desc: "Revela jovens mais talentosos no fim do ano" }
 ];
+
+const STADIUM_NAMES_MAP = {
+  "Flamengo": "Maracanã", "Fluminense": "Maracanã", "Vasco da Gama": "São Januário",
+  "Botafogo": "Estádio Nilton Santos", "Palmeiras": "Allianz Parque", "Corinthians": "Neo Química Arena",
+  "São Paulo": "MorumBIS", "Santos": "Vila Belmiro", "Juventus-SP": "Rua Javari (Conde Rodolfo Crespi)",
+  "Portuguesa": "Estádio do Canindé", "Guarani": "Brinco de Ouro", "Ponte Preta": "Moisés Lucarelli",
+  "Grêmio": "Arena do Grêmio", "Internacional": "Beira-Rio", "Juventude": "Alfredo Jaconi",
+  "Cruzeiro": "Mineirão", "Atlético-MG": "Arena MRV", "América-MG": "Arena Independência",
+  "Bahia": "Arena Fonte Nova", "Vitória": "Barradão", "Fortaleza": "Arena Castelão", "Ceará": "Arena Castelão",
+  "Sport": "Ilha do Retiro", "Santa Cruz": "Estádio do Arruda", "Náutico": "Estádio dos Aflitos",
+  "Athletico-PR": "Ligga Arena", "Coritiba": "Couto Pereira", "Paraná Clube": "Vila Capanema",
+  "Goiás": "Serrinha", "Vila Nova": "OBA", "Atlético-GO": "Antônio Accioly",
+  "Criciúma": "Heriberto Hülse", "Avaí": "Ressacada", "Figueirense": "Orlando Scarpelli", "Chapecoense": "Arena Condá",
+  "Paysandu": "Curuzu", "Remo": "Baenão", "Brasiliense": "Boca do Jacaré", "Bangu": "Moça Bonita"
+};
+
+function defaultStadiumName(clubName){
+  return STADIUM_NAMES_MAP[clubName] || ("Estádio Municipal de " + clubName);
+}
+
+// Premiações por posição nas 4 divisões (do 1º ao 18º)
+const LEAGUE_PRIZE_TABLE = {
+  3: [2500000, 1600000, 1200000, 950000, 750000, 600000, 500000, 420000, 350000, 300000, 250000, 200000, 160000, 130000, 0, 0, 0, 0],
+  2: [650000, 380000, 250000, 180000, 90000, 70000, 50000, 40000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  1: [220000, 130000, 90000, 65000, 35000, 25000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  0: [100000, 60000, 45000, 35000, 18000, 12000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+};
+
+const SUPERCUP_WEEK = 3;
+const SUPERCUP_PRIZES = { winner: 1500000, runnerUp: 500000 };
+
+const CONT_WEEKS = [8, 16, 24, 32];
+const CONT_ROUND_NAMES = [
+  "Oitavas de Final (16 clubes)",
+  "Quartas de Final (8 clubes)",
+  "Semifinal",
+  "FINAL CONTINENTAL 🌎"
+];
+const CONT_PRIZES = [300000, 600000, 1100000, 3500000];
+const CONT_RUNNER_UP_PRIZE = 1000000;
+
+const SOUTH_AMERICAN_CLUBS = [
+  { name: "River Plate (ARG)", rating: 415 },
+  { name: "Boca Juniors (ARG)", rating: 405 },
+  { name: "Racing Club (ARG)", rating: 390 },
+  { name: "Estudiantes (ARG)", rating: 380 },
+  { name: "Peñarol (URU)", rating: 385 },
+  { name: "Nacional (URU)", rating: 375 },
+  { name: "Indep. del Valle (EQU)", rating: 388 },
+  { name: "LDU Quito (EQU)", rating: 382 },
+  { name: "Colo-Colo (CHI)", rating: 376 },
+  { name: "Olimpia (PAR)", rating: 378 },
+  { name: "Atl. Nacional (COL)", rating: 374 },
+  { name: "Bolívar (BOL)", rating: 368 }
+];
+
+const NAMING_RIGHTS_DEALS = [
+  { id: "none", label: "Sem Naming Rights (Nome Tradicional)", bonusPerWeek: 0, minCap: 0, minPress: 0 },
+  { id: "regional", label: "Arena Guaraná Brasil (Regional)", bonusPerWeek: 4500, minCap: 10000, minPress: 20 },
+  { id: "nacional", label: "Arena Banco Astrum (Nacional)", bonusPerWeek: 12000, minCap: 22000, minPress: 45 },
+  { id: "global", label: "Neo Energia Arena (Global)", bonusPerWeek: 28000, minCap: 40000, minPress: 70 }
+];
+
+const TROPHY_CATALOG = [
+  { id: "serie_d", icon: "🏅", title: "Campeão da Série D", desc: "Conquistar o título da 4ª divisão nacional", pts: 100 },
+  { id: "serie_c", icon: "🥉", title: "Campeão da Série C", desc: "Conquistar o título da 3ª divisão nacional", pts: 200 },
+  { id: "serie_b", icon: "🥈", title: "Campeão da Série B", desc: "Conquistar o título da 2ª divisão nacional", pts: 350 },
+  { id: "serie_a", icon: "🥇", title: "Campeão Brasileiro Série A", desc: "Ergueu a taça máxima do Campeonato Brasileiro", pts: 800 },
+  { id: "copa_br", icon: "🏆", title: "Campeão da Copa do Brasil", desc: "Vencer as 6 fases eliminatórias da Copa do Brasil", pts: 650 },
+  { id: "supercopa", icon: "⚡", title: "Campeão da Supercopa", desc: "Vencer o duelo dos campeões na Supercopa do Brasil", pts: 450 },
+  { id: "continental", icon: "🌎", title: "Glória Eterna (Continental)", desc: "Conquistar a América na Copa Continental", pts: 1200 },
+  { id: "promo", icon: "📈", title: "Rei do Acesso", desc: "Garantir acesso no G-4 para uma divisão superior", pts: 80 },
+  { id: "golden_boot", icon: "👟", title: "Chuteira de Ouro", desc: "Ter o artilheiro isolado da sua divisão ou da Copa", pts: 120 },
+  { id: "playmaker", icon: "🎯", title: "Garçom de Ouro", desc: "Ter o líder de assistências da divisão na temporada", pts: 100 },
+  { id: "fifa_arena", icon: "🏟️", title: "Arena Padrão FIFA", desc: "Expandir o estádio do clube para 40.000+ lugares", pts: 150 },
+  { id: "treinador_ano", icon: "👔", title: "Treinador do Ano CBF", desc: "Ser eleito o melhor treinador da temporada", pts: 200 }
+];
+
 
 // --------------- UTILITIES ---------------
 function rnd(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
@@ -628,13 +843,14 @@ const TIER_BASE = [60, 135, 255, 380];
 const TIER_VAR  = [40, 50, 60, 75];
 const RANDOM_POS = ["GK","DF","DF","DF","MF","MF","MF","FW","FW"];
 
-function genYouth(level, forcedPos){
+function genYouth(level, forcedPos, academyLevel=15){
   const base = TIER_BASE[level] || 60;
-  const rating = clamp(Math.round(base * 0.7 + rnd(-15, 20)), 25, 540);
+  const acadBonus = Math.round((academyLevel || 15) * 0.25);
+  const rating = clamp(Math.round(base * 0.7 + acadBonus + rnd(-15, 20)), 25, 540);
   return buildPlayer({
     name: pick(FIRST_NAMES).trim() + " " + pick(LAST_NAMES).trim(),
     pos: forcedPos || pick(RANDOM_POS), rating, age: rnd(16,19),
-    pot: rating + rnd(35, 110)
+    pot: rating + rnd(35, 110) + acadBonus
   });
 }
 
@@ -696,8 +912,13 @@ function createAITeams(divisions){
         name, division: d, squad: genSquad(d),
         money: [100000, 260000, 950000, 4500000][d] + rnd(0,70000),
         stadium: [7000, 14000, 26000, 48000][d] + rnd(0,5000),
+        stadiumName: defaultStadiumName(name),
+        ticketPrice: [20, 32, 48, 75][d],
         pitch: [40,55,70,85][d], facilities: [20,35,50,75][d],
-        medical: [20,30,45,65][d], press: [15,25,40,60][d],
+        vipBoxes: [15,30,50,75][d], lighting: [20,40,60,85][d],
+        medical: [20,30,45,65][d], press: [15,25,40,60][d], academy: [15,30,45,70][d],
+        namingRights: "none",
+        recordAttendance: 0, recordGate: 0, attendanceHistory: [],
         points: 0, gf:0, ga:0, won:0, drawn:0, lost:0,
         kit: [pick(KIT_COLORS), pick(KIT_COLORS)]
       };
@@ -714,7 +935,13 @@ function newGame(opts){
   teams[name] = {
     name, division: 0, squad: genSquad(0, 20),
     money: opts.difficulty === "easy" ? 200000 : opts.difficulty === "hard" ? 70000 : 125000,
-    stadium: 6500, pitch: 35, facilities: 15, medical: 15, press: 10,
+    stadium: 6500,
+    stadiumName: defaultStadiumName(name),
+    ticketPrice: 20,
+    pitch: 35, facilities: 15, vipBoxes: 10, lighting: 15,
+    medical: 15, press: 10, academy: 15,
+    namingRights: "none",
+    recordAttendance: 0, recordGate: 0, attendanceHistory: [],
     points: 0, gf:0, ga:0, won:0, drawn:0, lost:0,
     kit: [opts.kit1 || "#00e676", opts.kit2 || "#ffca28"],
     isPlayer: true
@@ -728,7 +955,10 @@ function newGame(opts){
     formation: "4-4-2",
     teams, divisions, fixtures: [], otherFix: {}, otherTeams: {},
     results: [], history: [], selected: [], log: [], trophies: [],
-    cup: null, freeAgents: [], pendingOffers: null,
+    trophyDetails: [], unlockedBadges: {},
+    seasonFinances: { gate: 0, vip: 0, matchday: 0, socio: 0, prizes: 0, wages: 0, upkeep: 0, transfersIn: 0, transfersOut: 0 },
+    cup: null, supercup: null, continental: null, qualifiedContinental: [],
+    freeAgents: [], pendingOffers: null,
     manager: {
       name: "Treinador",
       totalWins: 0, totalDraws: 0, totalLosses: 0,
@@ -740,6 +970,8 @@ function newGame(opts){
     lastBoardMessage: null
   };
   G.cup = setupCup();
+  G.supercup = setupSupercup();
+  G.continental = setupContinental();
   setBoardObjective();
   generateAllFixtures();
   refreshFreeAgents();
@@ -854,11 +1086,13 @@ function playCupRound(){
   if(winners.length === 1){
     cup.winner = winners[0];
     if(cup.winner === G.teamName){
-      G.trophies.push("🏆 Copa do Brasil — Temp. " + G.season);
-      G.manager.trophiesWon++;
-      pt.money += CUP_PRIZES[CUP_PRIZES.length-1];
+      const finalPrize = CUP_PRIZES[CUP_PRIZES.length-1];
+      awardTrophy("🏆 Copa do Brasil — Temp. " + G.season, "copa_br", "Copa do Brasil", finalPrize);
+      pt.money += finalPrize;
+      G.seasonFinances = G.seasonFinances || { gate:0, vip:0, matchday:0, socio:0, prizes:0, wages:0, upkeep:0, transfersIn:0, transfersOut:0 };
+      G.seasonFinances.prizes += finalPrize;
       G.manager.boardConfidence = clamp(G.manager.boardConfidence + 10, 0, 100);
-      showMsg(`🏆🏆 VOCÊ CONQUISTOU A COPA DO BRASIL! ${fmtMoney(CUP_PRIZES[CUP_PRIZES.length-1])} de premiação!`, "info");
+      showMsg(`🏆🏆 VOCÊ CONQUISTOU A COPA DO BRASIL! ${fmtMoney(finalPrize)} de premiação!`, "info");
     }
     return { finished: true, winner: cup.winner, playerMatch };
   }
@@ -866,6 +1100,8 @@ function playCupRound(){
   if(cup.playerStillIn && winners.includes(G.teamName)){
     const prize = CUP_PRIZES[roundPlayed];
     pt.money += prize;
+    G.seasonFinances = G.seasonFinances || { gate:0, vip:0, matchday:0, socio:0, prizes:0, wages:0, upkeep:0, transfersIn:0, transfersOut:0 };
+    G.seasonFinances.prizes += prize;
     showMsg(`🏆 Classificado na Copa! +${fmtMoney(prize)} de premiação.`, "info");
   }
 
@@ -894,6 +1130,347 @@ function cupResultText(){
   if(last < 0) return "Não disputou";
   return ["Eliminado na 1ª fase","Eliminado na 2ª fase","Eliminado nas oitavas","Eliminado nas quartas","Eliminado na semifinal","Vice-campeão"][last] || "Eliminado";
 }
+
+// --------------- SUPERCOPA DO BRASIL & COPA CONTINENTAL (v4.0) ---------------
+function awardTrophy(titleStr, badgeId, compName, prizeMoney=0){
+  G.trophies = G.trophies || [];
+  G.trophyDetails = G.trophyDetails || [];
+  G.unlockedBadges = G.unlockedBadges || {};
+  if(!G.trophies.includes(titleStr)){
+    G.trophies.push(titleStr);
+    G.manager.trophiesWon = (G.manager.trophiesWon || 0) + 1;
+  }
+  G.trophyDetails.push({
+    id: uid(),
+    title: titleStr,
+    badgeId: badgeId || "copa_br",
+    comp: compName || "Competição Oficial",
+    season: G.season,
+    club: G.teamName,
+    prize: prizeMoney
+  });
+  if(badgeId){
+    G.unlockedBadges[badgeId] = (G.unlockedBadges[badgeId] || 0) + 1;
+  }
+}
+
+function checkSpecialBadges(){
+  if(!G) return;
+  G.unlockedBadges = G.unlockedBadges || {};
+  const pt = G.teams[G.teamName];
+  if(pt && pt.stadium >= 40000){
+    G.unlockedBadges["fifa_arena"] = Math.max(1, G.unlockedBadges["fifa_arena"] || 0);
+  }
+}
+
+function setupSupercup(serieAChamp=null, cupChamp=null){
+  const divA = G.divisions[3] || [];
+  let teamA = serieAChamp && G.teams[serieAChamp] ? serieAChamp : (divA[0] || "Flamengo");
+  let teamB = cupChamp && G.teams[cupChamp] ? cupChamp : (divA[1] || "Palmeiras");
+  if(teamA === teamB){
+    teamB = divA.find(n => n !== teamA) || "Botafogo";
+  }
+  return {
+    week: SUPERCUP_WEEK,
+    home: teamA,
+    away: teamB,
+    hg: null,
+    ag: null,
+    extraInfo: "",
+    winner: null,
+    runnerUp: null,
+    played: false
+  };
+}
+
+function playSupercup(){
+  const sc = G.supercup;
+  if(!sc || sc.played) return null;
+  const r = simulateTie(sc.home, sc.away);
+  const events = registerGoals(sc.home, sc.away, r.hg, r.ag, true, r.extra ? 120 : 90);
+  sc.hg = r.hg; sc.ag = r.ag; sc.extraInfo = r.extra;
+  sc.winner = r.winner; sc.runnerUp = r.loser; sc.played = true;
+
+  if(G.teams[sc.winner]) G.teams[sc.winner].money += SUPERCUP_PRIZES.winner;
+  if(G.teams[sc.runnerUp]) G.teams[sc.runnerUp].money += SUPERCUP_PRIZES.runnerUp;
+
+  const involvesPlayer = (sc.home === G.teamName || sc.away === G.teamName);
+  if(involvesPlayer){
+    const won = sc.winner === G.teamName;
+    events.push(...playerAftermath(true, won ? "V" : "D"));
+    G.seasonFinances = G.seasonFinances || { gate:0, vip:0, matchday:0, socio:0, prizes:0, wages:0, upkeep:0, transfersIn:0, transfersOut:0 };
+    if(won){
+      G.seasonFinances.prizes += SUPERCUP_PRIZES.winner;
+      awardTrophy(`⚡ Supercopa do Brasil — Temp. ${G.season}`, "supercopa", "Supercopa do Brasil", SUPERCUP_PRIZES.winner);
+      G.manager.boardConfidence = clamp(G.manager.boardConfidence + 8, 0, 100);
+      showMsg(`⚡🏆 CAMPEÃO DA SUPERCOPA DO BRASIL! +${fmtMoney(SUPERCUP_PRIZES.winner)}!`, "info");
+    } else {
+      G.seasonFinances.prizes += SUPERCUP_PRIZES.runnerUp;
+      showMsg(`🥈 Vice-campeão da Supercopa do Brasil (+${fmtMoney(SUPERCUP_PRIZES.runnerUp)}).`, "info");
+    }
+  }
+  return { ...sc, events, involvesPlayer };
+}
+
+function setupContinental(qualifiers=null){
+  const brClubs = [];
+  if(Array.isArray(qualifiers) && qualifiers.length){
+    qualifiers.forEach(n => { if(G.teams[n] && !brClubs.includes(n)) brClubs.push(n); });
+  }
+  const divA = G.divisions[3] || [];
+  for(const n of divA){
+    if(brClubs.length >= 5) break;
+    if(!brClubs.includes(n)) brClubs.push(n);
+  }
+  const intlNeeded = 16 - brClubs.length;
+  const intlPool = shuffle([...SOUTH_AMERICAN_CLUBS]).slice(0, intlNeeded).map(c => c.name);
+  const all16 = shuffle([...brClubs, ...intlPool]);
+  const firstRound = [];
+  for(let i=0; i<8; i++){
+    firstRound.push({
+      home: all16[i*2], away: all16[i*2+1],
+      hg: null, ag: null, winner: null, played: false, round: 0,
+      isPlayerMatch: all16[i*2] === G.teamName || all16[i*2+1] === G.teamName
+    });
+  }
+  const inCup = all16.includes(G.teamName);
+  return {
+    round: 0,
+    participants: all16,
+    currentMatches: firstRound,
+    history: [],
+    winner: null,
+    runnerUp: null,
+    playerQualified: inCup,
+    playerStillIn: inCup,
+    playerEliminated: false
+  };
+}
+
+function extClubStrength(name){
+  if(G.teams[name]) return teamStrength(name);
+  const sa = SOUTH_AMERICAN_CLUBS.find(c => c.name === name);
+  return sa ? sa.rating : 380;
+}
+
+function simulateContinentalTie(homeName, awayName){
+  const hPitch = G.teams[homeName] ? G.teams[homeName].pitch : 82;
+  let hStr = extClubStrength(homeName) * (0.9 + hPitch / 500) * 1.07 * (0.86 + Math.random()*0.28);
+  let aStr = extClubStrength(awayName) * (0.86 + Math.random()*0.28);
+  const total = hStr + aStr;
+  let hExp = (hStr/total) * 2.55, aExp = (aStr/total) * 2.35;
+  const f = FORMATIONS[G.formation] || FORMATIONS["4-4-2"];
+  if(homeName === G.teamName){ hExp *= f.att; aExp *= f.opp; }
+  else if(awayName === G.teamName){ aExp *= f.att; hExp *= f.opp; }
+
+  let hg = Math.min(poisson(hExp), 7), ag = Math.min(poisson(aExp), 7);
+  let extra = "", penH = null, penA = null;
+  if(hg === ag){
+    hg += poisson(hExp / 3); ag += poisson(aExp / 3);
+    extra = " (Prorrogação)";
+    if(hg === ag){
+      const pH = clamp(0.5 + (hStr - aStr) / (hStr + aStr) * 0.15, 0.35, 0.65);
+      const homeWins = Math.random() < pH;
+      const w = rnd(3,5), l = clamp(w - rnd(1,2), 0, 4);
+      penH = homeWins ? w : l; penA = homeWins ? l : w;
+      extra = ` (Pênaltis ${penH}–${penA})`;
+    }
+  }
+  const homeWon = hg > ag || (hg === ag && penH > penA);
+  return { hg, ag, extra, winner: homeWon ? homeName : awayName, loser: homeWon ? awayName : homeName };
+}
+
+function playContinentalRound(){
+  const cont = G.continental;
+  if(!cont || cont.winner) return null;
+  const winners = [];
+  let playerMatch = null;
+  const roundPlayed = cont.round;
+
+  cont.currentMatches.forEach(m => {
+    if(m.played) return;
+    const involvesPlayer = m.home === G.teamName || m.away === G.teamName;
+    const r = simulateContinentalTie(m.home, m.away);
+    const events = [];
+    if(G.teams[m.home]) trackTeamGoals(G.teams[m.home], r.hg, m.home === G.teamName, true);
+    if(G.teams[m.away]) trackTeamGoals(G.teams[m.away], r.ag, m.away === G.teamName, true);
+    m.hg = r.hg; m.ag = r.ag; m.played = true; m.winner = r.winner; m.loser = r.loser; m.extraInfo = r.extra;
+    winners.push(r.winner);
+    if(involvesPlayer){
+      const won = r.winner === G.teamName;
+      events.push(...playerAftermath(true, won ? "V" : "D"));
+      playerMatch = { ...m, round: roundPlayed, playerWon: won, extraInfo: r.extra, events };
+      if(!won){ cont.playerEliminated = true; cont.playerStillIn = false; }
+    }
+  });
+
+  cont.history.push(cont.currentMatches.map(m => ({ ...m })));
+  cont.round++;
+
+  const pt = G.teams[G.teamName];
+  G.seasonFinances = G.seasonFinances || { gate:0, vip:0, matchday:0, socio:0, prizes:0, wages:0, upkeep:0, transfersIn:0, transfersOut:0 };
+
+  if(winners.length === 1){
+    cont.winner = winners[0];
+    const finalMatch = cont.history[cont.history.length-1][0];
+    cont.runnerUp = finalMatch ? (finalMatch.winner === finalMatch.home ? finalMatch.away : finalMatch.home) : null;
+    if(G.teams[cont.winner]) G.teams[cont.winner].money += CONT_PRIZES[CONT_PRIZES.length-1];
+    if(cont.runnerUp && G.teams[cont.runnerUp]) G.teams[cont.runnerUp].money += CONT_RUNNER_UP_PRIZE;
+
+    if(cont.winner === G.teamName){
+      G.seasonFinances.prizes += CONT_PRIZES[CONT_PRIZES.length-1];
+      awardTrophy(`🌎 Copa Continental — Temp. ${G.season}`, "continental", "Copa Continental", CONT_PRIZES[CONT_PRIZES.length-1]);
+      G.manager.boardConfidence = clamp(G.manager.boardConfidence + 15, 0, 100);
+      showMsg(`🌎🏆 GLÓRIA ETERNA! VOCÊ CONQUISTOU A COPA CONTINENTAL! +${fmtMoney(CONT_PRIZES[CONT_PRIZES.length-1])}!`, "info");
+    } else if(cont.runnerUp === G.teamName){
+      G.seasonFinances.prizes += CONT_RUNNER_UP_PRIZE;
+      showMsg(`🥈 Vice-campeão da Copa Continental (+${fmtMoney(CONT_RUNNER_UP_PRIZE)}).`, "info");
+    }
+    return { finished: true, winner: cont.winner, playerMatch };
+  }
+
+  if(cont.playerStillIn && winners.includes(G.teamName)){
+    const prize = CONT_PRIZES[roundPlayed] || 300000;
+    pt.money += prize;
+    G.seasonFinances.prizes += prize;
+    showMsg(`🌎 Avançou na Copa Continental! +${fmtMoney(prize)} de premiação.`, "info");
+  }
+
+  const nextMatches = [];
+  const sw = shuffle(winners);
+  for(let i=0; i+1 < sw.length; i += 2){
+    nextMatches.push({
+      home: sw[i], away: sw[i+1], hg: null, ag: null, winner: null, played: false,
+      round: cont.round, isPlayerMatch: sw[i] === G.teamName || sw[i+1] === G.teamName
+    });
+  }
+  cont.currentMatches = nextMatches;
+  return { finished: false, playerMatch };
+}
+
+function isContinentalWeek(){
+  return G && CONT_WEEKS.includes(G.week) && G.continental && !G.continental.winner;
+}
+
+function continentalResultText(){
+  const c = G.continental;
+  if(!c || !c.playerQualified) return "Não disputou";
+  if(c.winner === G.teamName) return "Campeão 🌎";
+  if(c.runnerUp === G.teamName) return "Vice-campeão";
+  let last = -1;
+  c.history.forEach((round, i) => { if(round.some(m => m.home === G.teamName || m.away === G.teamName)) last = i; });
+  if(last < 0) return "Classificado";
+  return ["Eliminado nas oitavas","Eliminado nas quartas","Eliminado na semifinal","Vice-campeão"][last] || "Eliminado";
+}
+
+// --------------- ESTÁDIO & ESTIMATIVA DE RENDA (v4.0) ---------------
+function getStadiumTier(cap, fac, vip, light){
+  const score = (cap / 1000) + (fac + vip + light) / 6;
+  if(cap >= 40000 && score >= 65) return { level: 4, name: "Arena Padrão FIFA ⭐⭐⭐⭐", badge: "a" };
+  if(cap >= 22000 && score >= 40) return { level: 3, name: "Arena Moderna ⭐⭐⭐", badge: "b" };
+  if(cap >= 12000 && score >= 24) return { level: 2, name: "Estádio Regional ⭐⭐", badge: "c" };
+  return { level: 1, name: "Estádio Municipal ⭐", badge: "d" };
+}
+
+function calcSociosCount(team){
+  const divBase = [1200, 3800, 11000, 28000][team.division] || 1200;
+  const pressMult = 0.6 + (team.press || 10) / 55;
+  const trophyBonus = (G && team.name === G.teamName) ? (G.trophies || []).length * 1400 : 0;
+  const winRate = (team.won + team.drawn + team.lost) > 0 ? (team.points / ((team.won + team.drawn + team.lost)*3)) : 0.45;
+  return Math.round((divBase * pressMult * (0.75 + winRate * 0.55)) + trophyBonus);
+}
+
+function estimateMatchRevenue(team, opts = {}){
+  const div = team.division || 0;
+  const cap = team.stadium || 6500;
+  const price = opts.ticketPrice != null ? opts.ticketPrice : (team.ticketPrice || [20, 32, 48, 75][div]);
+  const scenario = opts.scenario || "normal"; // normal | rival | cup | final
+
+  // Preço de referência ideal para a divisão + conforto do estádio
+  const baseIdeal = [20, 32, 48, 75][div] || 20;
+  const comfortBonus = Math.round(((team.facilities||15) + (team.lighting||15) + (team.vipBoxes||10)) / 15);
+  const idealPrice = baseIdeal + comfortBonus;
+
+  // Elasticidade de preço
+  const ratio = price / Math.max(10, idealPrice);
+  let priceFactor;
+  if(ratio <= 0.75) priceFactor = 1.24 + (0.75 - ratio) * 0.25;
+  else if(ratio <= 1.0) priceFactor = 1.0 + (1.0 - ratio) * 0.95;
+  else if(ratio <= 1.35) priceFactor = 1.0 - (ratio - 1.0) * 1.15;
+  else priceFactor = Math.max(0.14, 0.60 - (ratio - 1.35) * 0.75);
+
+  const gamesPlayed = (team.won || 0) + (team.drawn || 0) + (team.lost || 0);
+  const ptsPerf = gamesPlayed > 0 ? (team.points / (gamesPlayed * 3)) : 0.48;
+  const appealMult = scenario === "final" ? 1.38 : scenario === "cup" ? 1.24 : scenario === "rival" ? 1.16 : 1.0;
+  const mktFactor = 0.88 + ((team.press || 10) + (team.lighting || 15)) / 400;
+
+  const baseOcc = (0.44 + ptsPerf * 0.38) * priceFactor * appealMult * mktFactor;
+  const noise = opts.randomize ? (0.93 + Math.random() * 0.14) : 1.0;
+  const occRate = clamp(baseOcc * noise, 0.12, 1.0);
+  const attendance = clamp(Math.round(cap * occRate), Math.min(cap, 350), cap);
+  const occPct = Math.round((attendance / Math.max(1, cap)) * 100);
+
+  // Receitas de jogo em casa (Matchday)
+  const gateIncome = Math.round(attendance * price);
+  const vipSeats = Math.round(cap * 0.035 * ((team.vipBoxes || 10) / 100) * Math.min(1, occRate * 1.15));
+  const vipIncome = Math.round(vipSeats * (idealPrice * 2.4));
+  const spendPerFan = 3.5 + (team.facilities || 15) * 0.14 + (team.lighting || 15) * 0.05 + div * 2.5;
+  const matchdayIncome = Math.round(attendance * spendPerFan);
+  const homeMatchTotal = gateIncome + vipIncome + matchdayIncome;
+
+  // Receita fixa por rodada (Sócio-torcedor + Patrocínio + Naming Rights)
+  const socios = calcSociosCount(team);
+  const socioFeePerWeek = [2.2, 3.0, 4.2, 6.0][div] || 2.2;
+  const namingDeal = NAMING_RIGHTS_DEALS.find(d => d.id === (team.namingRights || "none")) || NAMING_RIGHTS_DEALS[0];
+  const sponsorBase = [3500, 9000, 24000, 68000][div] * (0.85 + (team.press || 10) / 200);
+  const socioIncome = Math.round(socios * socioFeePerWeek + sponsorBase + namingDeal.bonusPerWeek);
+
+  // Custos por rodada
+  const wages = (team.squad || []).reduce((s,p) => s + (p.wage || 0), 0);
+  const upkeep = Math.round(
+    2000 + cap * 0.15 + (team.medical || 15) * 30 + (team.press || 10) * 25 +
+    (team.vipBoxes || 10) * 22 + (team.lighting || 15) * 18 + (team.academy || 15) * 24
+  );
+  const totalCosts = wages + upkeep;
+
+  // Bônus de caldeirão se ocupação >= 80%
+  const crowdBonusPct = (occPct >= 80 && cap >= 8000) ? Math.min(6, Math.round((occPct - 75) / 4)) : 0;
+
+  return {
+    capacity: cap,
+    ticketPrice: price,
+    idealPrice,
+    attendance,
+    occPct,
+    gateIncome,
+    vipIncome,
+    matchdayIncome,
+    homeMatchTotal,
+    socios,
+    namingBonus: namingDeal.bonusPerWeek,
+    socioIncome,
+    wages,
+    upkeep,
+    totalCosts,
+    netHomeWeek: homeMatchTotal + socioIncome - totalCosts,
+    netAwayWeek: socioIncome - totalCosts,
+    crowdBonusPct
+  };
+}
+
+function findOptimalTicketPrice(team, scenario="normal"){
+  let bestP = team.ticketPrice || 25;
+  let bestRev = -1;
+  for(let p = 10; p <= 220; p += 2){
+    const est = estimateMatchRevenue(team, { ticketPrice: p, scenario, randomize: false });
+    if(est.homeMatchTotal > bestRev){
+      bestRev = est.homeMatchTotal;
+      bestP = p;
+    }
+  }
+  return bestP;
+}
+
 
 // --------------- BOARD OBJECTIVES ---------------
 function setBoardObjective(){
@@ -1033,8 +1610,13 @@ function teamStrength(name){
 }
 
 function expectedGoals(homeName, awayName){
-  let hStr = teamStrength(homeName) * (0.9 + G.teams[homeName].pitch / 500);
+  const hTeam = G.teams[homeName];
+  let hStr = teamStrength(homeName) * (0.9 + (hTeam ? hTeam.pitch : 50) / 500);
   let aStr = teamStrength(awayName);
+  if(hTeam){
+    const est = estimateMatchRevenue(hTeam, { randomize: false });
+    if(est.crowdBonusPct > 0) hStr *= (1 + est.crowdBonusPct / 100);
+  }
   hStr *= 1.08;
   hStr *= (0.85 + Math.random()*0.3);
   aStr *= (0.85 + Math.random()*0.3);
@@ -1137,12 +1719,29 @@ function playWeek(){
     G.otherFix[d][weekIdx].forEach(([i,j]) => simulateMatch(names[i], names[j], false));
   }
 
+  if(G.week === SUPERCUP_WEEK && G.supercup && !G.supercup.played){
+    const scRes = playSupercup();
+    if(scRes && scRes.involvesPlayer){
+      playerResult = playerResult || {};
+      playerResult.supercupMatch = scRes;
+    }
+  }
+
   if(isCupWeek()){
     const cupResult = playCupRound();
     if(cupResult && cupResult.playerMatch){
       playerResult = playerResult || {};
       playerResult.cupMatch = cupResult.playerMatch;
       playerResult.cupRoundName = CUP_ROUND_NAMES[cupResult.playerMatch.round];
+    }
+  }
+
+  if(isContinentalWeek()){
+    const contResult = playContinentalRound();
+    if(contResult && contResult.playerMatch){
+      playerResult = playerResult || {};
+      playerResult.contMatch = contResult.playerMatch;
+      playerResult.contRoundName = CONT_ROUND_NAMES[contResult.playerMatch.round];
     }
   }
 
@@ -1158,11 +1757,39 @@ function playWeek(){
   });
 
   const pt = G.teams[G.teamName];
-  const attendance = Math.min(pt.stadium, Math.round(pt.stadium * (0.42 + pt.points/(playedWeek*3+1)) * (0.72+Math.random()*0.28)));
-  const income = attendance * (9 + pt.facilities/10 + (pt.division*6));
-  const wages = pt.squad.reduce((s,p) => s + p.wage, 0);
-  const upkeep = 2000 + pt.stadium*0.15 + pt.medical*30 + pt.press*25;
-  pt.money += income - wages - upkeep;
+  const playedHome = playerResult && playerResult.home === G.teamName;
+  const oppName = playerResult ? (playedHome ? playerResult.away : playerResult.home) : "Adversário";
+  const oppRank = getStandings(pt.division).findIndex(t => t.name === oppName) + 1;
+  const matchScenario = oppRank > 0 && oppRank <= 4 ? "rival" : "normal";
+  const fin = estimateMatchRevenue(pt, { scenario: matchScenario, randomize: true });
+
+  G.seasonFinances = G.seasonFinances || { gate:0, vip:0, matchday:0, socio:0, prizes:0, wages:0, upkeep:0, transfersIn:0, transfersOut:0 };
+  let weekIncome = fin.socioIncome;
+  G.seasonFinances.socio += fin.socioIncome;
+  G.seasonFinances.wages += fin.wages;
+  G.seasonFinances.upkeep += fin.upkeep;
+
+  if(playedHome){
+    weekIncome += fin.homeMatchTotal;
+    G.seasonFinances.gate += fin.gateIncome;
+    G.seasonFinances.vip += fin.vipIncome;
+    G.seasonFinances.matchday += fin.matchdayIncome;
+    pt.recordAttendance = Math.max(pt.recordAttendance || 0, fin.attendance);
+    pt.recordGate = Math.max(pt.recordGate || 0, fin.homeMatchTotal);
+    pt.attendanceHistory = pt.attendanceHistory || [];
+    pt.attendanceHistory.unshift({
+      week: playedWeek, season: G.season, opp: oppName,
+      comp: DIVISIONS[pt.division],
+      attendance: fin.attendance, capacity: fin.capacity, occPct: fin.occPct,
+      ticketPrice: fin.ticketPrice, gateIncome: fin.gateIncome,
+      vipIncome: fin.vipIncome, matchdayIncome: fin.matchdayIncome,
+      totalIncome: fin.homeMatchTotal
+    });
+    if(pt.attendanceHistory.length > 12) pt.attendanceHistory.pop();
+    if(playerResult) playerResult.attendanceInfo = fin;
+  }
+
+  pt.money += weekIncome - fin.totalCosts;
 
   if(autoPlayActive && autoPlayUpgradeStadium && pt.money > 160000){
     if(pt.stadium < 50000){ pt.money -= 25000; pt.stadium += 500; }
@@ -1225,7 +1852,7 @@ function refillSquad(t, isMine, info){
   t.squad.forEach(p => { if(cnt[p.pos] !== undefined) cnt[p.pos]++; });
   Object.keys(minNeed).forEach(pos => {
     while(cnt[pos] < minNeed[pos]){
-      const y = genYouth(level, pos);
+      const y = genYouth(level, pos, t.academy || 15);
       t.squad.push(y); cnt[pos]++;
       if(isMine && info) info.youth.push(`${y.name} (${y.pos}, ${y.age})`);
     }
@@ -1235,7 +1862,7 @@ function refillSquad(t, isMine, info){
   } else if(t.squad.length < 26){
     const n = rnd(1,2);
     for(let i=0;i<n;i++){
-      const y = genYouth(level);
+      const y = genYouth(level, null, t.academy || 15);
       t.squad.push(y);
       if(info) info.youth.push(`${y.name} (${y.pos}, ${y.age})`);
     }
@@ -1290,7 +1917,10 @@ function takeNewJob(clubName){
   G.manager.form5 = [];
   G.phase = "season";
   G.pendingOffers = null;
+  G.seasonFinances = { gate:0, vip:0, matchday:0, socio:0, prizes:0, wages:0, upkeep:0, transfersIn:0, transfersOut:0 };
   G.cup = setupCup();
+  G.supercup = setupSupercup(champs[3], cupWinnerName);
+  G.continental = setupContinental(G.qualifiedContinental);
   setBoardObjective();
   generateAllFixtures();
   refreshFreeAgents();
@@ -1310,23 +1940,63 @@ function endSeason(){
   if(playerPos < G.manager.bestFinish) G.manager.bestFinish = playerPos;
 
   const scorers = [];
-  G.divisions[div].forEach(n => G.teams[n].squad.forEach(p => { if((p.goals||0) > 0) scorers.push({ n:p.name, club:n, g:p.goals }); }));
+  const assisters = [];
+  G.divisions[div].forEach(n => G.teams[n].squad.forEach(p => {
+    if((p.goals||0) > 0) scorers.push({ n:p.name, club:n, g:p.goals });
+    if((p.assists||0) > 0) assisters.push({ n:p.name, club:n, a:p.assists });
+  }));
   scorers.sort((a,b) => b.g - a.g);
+  assisters.sort((a,b) => b.a - a.a);
   const top = scorers[0];
+  const topAssister = assisters[0];
   const champs = [0,1,2,3].map(d => getStandings(d)[0].name);
+  const serieATop4 = getStandings(3).slice(0,4).map(t => t.name);
+  const cupWinnerName = (G.cup && G.cup.winner) ? G.cup.winner : champs[3];
+  const contWinnerName = (G.continental && G.continental.winner) ? G.continental.winner : "—";
+  const superWinnerName = (G.supercup && G.supercup.winner) ? G.supercup.winner : "—";
   const cupTxt = cupResultText();
+  const contTxt = continentalResultText();
+
+  // Premiação da tabela de classificação para todos os clubes
+  [0,1,2,3].forEach(d => {
+    const st = getStandings(d);
+    const tablePrizes = LEAGUE_PRIZE_TABLE[d] || [];
+    st.forEach((t, idx) => {
+      const pMoney = tablePrizes[idx] || 0;
+      if(pMoney > 0) t.money += pMoney;
+    });
+  });
+  const myLeaguePrize = (LEAGUE_PRIZE_TABLE[div] || [])[playerPos - 1] || 0;
 
   let msg = `Temporada ${G.season} encerrada!\nVocê terminou em ${playerPos}º lugar na ${DIVISIONS[div]}.\n`;
+  if(myLeaguePrize > 0) msg += `💰 Premiação por colocação (${playerPos}º): +${fmtMoney(myLeaguePrize)}\n`;
   if(top) msg += `⚽ Artilheiro: ${top.n} (${top.club}) — ${top.g} gols\n`;
-  msg += `🏆 Copa do Brasil: ${cupTxt}\n`;
+  if(topAssister) msg += `🎯 Líder de Assistências: ${topAssister.n} (${topAssister.club}) — ${topAssister.a} ass.\n`;
+  msg += `🏆 Copa do Brasil: ${cupTxt} (Campeão: ${cupWinnerName})\n`;
+  msg += `🌎 Copa Continental: ${contTxt} (Campeão: ${contWinnerName})\n`;
   msg += `🏅 Campeões — A: ${champs[3]} · B: ${champs[2]} · C: ${champs[1]} · D: ${champs[0]}\n\n`;
   msg += `${objEval.msg}\n\nConfiança da diretoria: ${G.manager.boardConfidence}%`;
 
   if(playerPos === 1){
-    G.trophies.push("🏆 Campeão Brasileiro - " + DIVISIONS[div] + " (Temp. " + G.season + ")");
-    G.manager.trophiesWon++;
-    msg += "\n🏆 É CAMPEÃO BRASILEIRO!";
-    pt.money += [80000,180000,550000,2200000][div] || 80000;
+    const badgeKey = ["serie_d", "serie_c", "serie_b", "serie_a"][div];
+    awardTrophy("🏆 Campeão Brasileiro - " + DIVISIONS[div] + " (Temp. " + G.season + ")", badgeKey, DIVISIONS[div], myLeaguePrize);
+    awardTrophy("👔 Treinador do Ano (" + DIVISIONS[div] + " - Temp. " + G.season + ")", "treinador_ano", "Prêmio CBF", 40000);
+    pt.money += 40000;
+    msg += "\n🏆 É CAMPEÃO BRASILEIRO! (+Prêmio Treinador do Ano: R$ 40K)";
+  }
+
+  // Prêmios individuais para jogadores do seu clube
+  if(top && top.club === G.teamName){
+    const bootBonus = [15000, 30000, 60000, 150000][div] || 15000;
+    pt.money += bootBonus;
+    awardTrophy(`👟 Chuteira de Ouro: ${top.n} (${top.g} gols - Temp. ${G.season})`, "golden_boot", DIVISIONS[div], bootBonus);
+    msg += `\n👟 Chuteira de Ouro para ${top.n}! Bônus: +${fmtMoney(bootBonus)}`;
+  }
+  if(topAssister && topAssister.club === G.teamName){
+    const playBonus = [10000, 20000, 40000, 100000][div] || 10000;
+    pt.money += playBonus;
+    awardTrophy(`🎯 Garçom de Ouro: ${topAssister.n} (${topAssister.a} ass. - Temp. ${G.season})`, "playmaker", DIVISIONS[div], playBonus);
+    msg += `\n🎯 Garçom de Ouro para ${topAssister.n}! Bônus: +${fmtMoney(playBonus)}`;
   }
 
   const moves = applyPyramid();
@@ -1334,22 +2004,35 @@ function endSeason(){
   let promoted = false, relegated = false;
   if(mine && mine.to > mine.from){
     promoted = true;
+    G.unlockedBadges = G.unlockedBadges || {};
+    G.unlockedBadges["promo"] = (G.unlockedBadges["promo"] || 0) + 1;
     if(mine.to === 3 && pt.stadium < 40000){
       msg += `\n\n⚠️ A CBF exigiu estádio de 40.000 lugares (atual: ${pt.stadium.toLocaleString()}). Taxa de adequação: R$ 150K.`;
       pt.money -= 150000;
     }
     msg += `\n\n🎉 ACESSO GARANTIDO (G-4) para a ${DIVISIONS[mine.to]}!`;
     if(mine.to === 3){
-      G.trophies.push("Acesso à Série A — Temporada " + G.season);
-      G.manager.trophiesWon++;
+      awardTrophy("📈 Acesso à Série A — Temporada " + G.season, "promo", "Acesso Série A", 0);
     }
   } else if(mine){
     relegated = true;
     msg += `\n\n📉 Rebaixado no Z-4 para a ${DIVISIONS[mine.to]}.`;
   }
 
+  checkSpecialBadges();
+
+  const nextContQualifiers = [...serieATop4];
+  if(cupWinnerName && !nextContQualifiers.includes(cupWinnerName)) nextContQualifiers.push(cupWinnerName);
+  G.qualifiedContinental = nextContQualifiers;
+
   G.history = G.history || [];
-  G.history.push({ season: G.season, div, pos: playerPos, cup: cupTxt, top: top ? `${top.n} (${top.g})` : "", promoted, relegated });
+  G.history.push({
+    season: G.season, div, pos: playerPos, cup: cupTxt, cont: contTxt,
+    top: top ? `${top.n} (${top.g})` : "",
+    champA: champs[3], champCup: cupWinnerName, champCont: contWinnerName, champSuper: superWinnerName,
+    prizeWon: myLeaguePrize + (G.seasonFinances ? G.seasonFinances.prizes : 0),
+    promoted, relegated
+  });
 
   const sacked = G.manager.boardConfidence <= 5;
 
@@ -1370,6 +2053,8 @@ function endSeason(){
   G.manager.seasonsAtClub++;
   G.manager.form5 = [];
   G.cup = setupCup();
+  G.supercup = setupSupercup();
+  G.continental = setupContinental(G.qualifiedContinental);
   setBoardObjective();
   generateAllFixtures();
   refreshFreeAgents();
@@ -1552,6 +2237,7 @@ function buyPlayer(playerId, clubName, offer){
   club.squad.splice(idx,1);
   club.money += offer;
   pt.money -= offer;
+  if(G.seasonFinances) G.seasonFinances.transfersOut = (G.seasonFinances.transfersOut||0) + offer;
   pt.squad.push(p);
   return {ok:true, msg:`✅ ${p.name} contratado do ${clubName} por ${fmtMoney(offer)}!`};
 }
@@ -1573,6 +2259,7 @@ function sellPlayer(playerId, askPrice){
   const buyer = pick(buyers);
   pt.squad.splice(idx,1);
   pt.money += askPrice;
+  if(G.seasonFinances) G.seasonFinances.transfersIn = (G.seasonFinances.transfersIn||0) + askPrice;
   buyer.squad.push(p);
   buyer.money -= askPrice;
   G.selected = G.selected.filter(id => id !== playerId);
@@ -1603,6 +2290,7 @@ function signFreeAgent(id){
   const bonus = signingBonus(p);
   if(pt.money < bonus) return {ok:false, msg:"Saldo insuficiente para as luvas."};
   pt.money -= bonus;
+  if(G.seasonFinances) G.seasonFinances.transfersOut = (G.seasonFinances.transfersOut||0) + bonus;
   G.freeAgents.splice(idx,1);
   delete p.fromRelease;
   p.energy = 100; p.injured = 0; p.suspended = 0;
@@ -1633,23 +2321,90 @@ function adjustInput(inputId, delta){
   el.value = Math.max(1000, val + delta);
 }
 
-// --------------- STADIUM UPGRADES ---------------
+// --------------- STADIUM UPGRADES & MANAGEMENT (v4.0) ---------------
 function upgrade(what){
   const pt = G.teams[G.teamName];
   const costs = {
-    seats: {cost: 25000, effect:()=>{ pt.stadium = Math.min(100000, pt.stadium+500); }, msg:"+500 lugares construídos!"},
-    seatsFast: {cost: 75000, effect:()=>{ pt.stadium = Math.min(100000, pt.stadium+1000); }, msg:"+1000 lugares (acelerado)!"},
-    pitch: {cost: 15000, effect:()=>{ pt.pitch = Math.min(100, pt.pitch+10); }, msg:"Gramado reformado (+10%)!"},
-    facilities: {cost: 20000, effect:()=>{ pt.facilities = Math.min(100, pt.facilities+10); }, msg:"CT e Loja modernizados (+10%)!"},
-    medical: {cost: 12000, effect:()=>{ pt.medical = Math.min(100, pt.medical+10); }, msg:"DM aprimorado (+10%)!"},
-    press: {cost: 10000, effect:()=>{ pt.press = Math.min(100, pt.press+10); }, msg:"Marketing melhorado (+10%)!"}
+    seats: {cost: 25000, max: () => pt.stadium >= 100000, effect:()=>{ pt.stadium = Math.min(100000, pt.stadium+500); }, msg:"🏟️ +500 lugares construídos!"},
+    seatsFast: {cost: 75000, max: () => pt.stadium >= 100000, effect:()=>{ pt.stadium = Math.min(100000, pt.stadium+1000); }, msg:"🏟️ +1.000 lugares (expansão rápida)!"},
+    seatsMega: {cost: 320000, max: () => pt.stadium >= 100000, effect:()=>{ pt.stadium = Math.min(100000, pt.stadium+5000); }, msg:"🏟️ Novo anel inaugurado (+5.000 lugares)!"},
+    pitch: {cost: 15000, max: () => pt.pitch >= 100, effect:()=>{ pt.pitch = Math.min(100, pt.pitch+10); }, msg:"🌱 Gramado reformado (+10%)!"},
+    facilities: {cost: 20000, max: () => pt.facilities >= 100, effect:()=>{ pt.facilities = Math.min(100, pt.facilities+10); }, msg:"🛍️ CT, Bares e Loja modernizados (+10%)!"},
+    vipBoxes: {cost: 28000, max: () => (pt.vipBoxes||0) >= 100, effect:()=>{ pt.vipBoxes = Math.min(100, (pt.vipBoxes||10)+10); }, msg:"🥂 Camarotes VIP & Lounge ampliados (+10%)!"},
+    lighting: {cost: 18000, max: () => (pt.lighting||0) >= 100, effect:()=>{ pt.lighting = Math.min(100, (pt.lighting||15)+10); }, msg:"💡 Iluminação LED e Telão atualizados (+10%)!"},
+    medical: {cost: 12000, max: () => pt.medical >= 100, effect:()=>{ pt.medical = Math.min(100, pt.medical+10); }, msg:"🏥 DM e Fisioterapia aprimorados (+10%)!"},
+    press: {cost: 10000, max: () => pt.press >= 100, effect:()=>{ pt.press = Math.min(100, pt.press+10); }, msg:"📣 Marketing & Sócios expandidos (+10%)!"},
+    academy: {cost: 22000, max: () => (pt.academy||0) >= 100, effect:()=>{ pt.academy = Math.min(100, (pt.academy||15)+10); }, msg:"🌱 Centro de Base & Olheiros evoluído (+10%)!"}
   };
   const u = costs[what];
   if(!u) return;
+  if(u.max && u.max()){ showMsg("Este setor já atingiu o nível máximo (100%)!", "info"); render(); return; }
   if(pt.money < u.cost){ showMsg("Saldo insuficiente!", "error"); render(); return; }
   pt.money -= u.cost;
   u.effect();
+  checkSpecialBadges();
+  saveGame();
   showMsg(u.msg, "info");
+  render();
+}
+
+function setTicketPrice(val){
+  const pt = G.teams[G.teamName];
+  pt.ticketPrice = clamp(Math.round(Number(val) || 20), 10, 250);
+  saveGame();
+  render();
+}
+
+function applyTicketPreset(mode){
+  const pt = G.teams[G.teamName];
+  const est = estimateMatchRevenue(pt, { scenario: stadiumSimScenario, randomize: false });
+  if(mode === "popular") pt.ticketPrice = clamp(Math.round(est.idealPrice * 0.72), 10, 250);
+  else if(mode === "balanced") pt.ticketPrice = clamp(est.idealPrice, 10, 250);
+  else if(mode === "optimal") pt.ticketPrice = findOptimalTicketPrice(pt, stadiumSimScenario);
+  else if(mode === "premium") pt.ticketPrice = clamp(Math.round(est.idealPrice * 1.35), 10, 250);
+  saveGame();
+  showMsg(`🎟️ Ingresso ajustado para R$ ${pt.ticketPrice}!`, "info");
+  render();
+}
+
+function saveStadiumName(){
+  const inp = document.getElementById("stadiumNameInput");
+  if(!inp) return;
+  const clean = String(inp.value || "").replace(/[^\p{L}\p{N} .()\-]/gu, "").trim().slice(0, 36);
+  if(!clean){ showMsg("Digite um nome válido para o estádio.", "error"); return; }
+  G.teams[G.teamName].stadiumName = clean;
+  saveGame();
+  closeModal();
+  showMsg(`🏟️ Estádio rebatizado para "${clean}"!`, "info");
+  render();
+}
+
+function openRenameStadiumModal(){
+  const pt = G.teams[G.teamName];
+  const cur = pt.stadiumName || defaultStadiumName(G.teamName);
+  openModal("✏️ Batizar Estádio", `
+    <div class="form-row">
+      <label>Nome Oficial do Estádio / Arena</label>
+      <input type="text" id="stadiumNameInput" value="${cur}" maxlength="36" style="max-width:100%">
+    </div>
+    <div class="flex-row" style="justify-content:flex-end">
+      <button class="btn" onclick="closeModal()">Cancelar</button>
+      <button class="btn primary" onclick="saveStadiumName()">Salvar Nome</button>
+    </div>
+  `, true);
+}
+
+function selectNamingRights(dealId){
+  const pt = G.teams[G.teamName];
+  const deal = NAMING_RIGHTS_DEALS.find(d => d.id === dealId);
+  if(!deal) return;
+  if(pt.stadium < deal.minCap || (pt.press || 10) < deal.minPress){
+    showMsg(`Exige estádio de ${deal.minCap.toLocaleString()} lug. e Marketing ${deal.minPress}%.`, "error");
+    return;
+  }
+  pt.namingRights = deal.id;
+  saveGame();
+  showMsg(deal.id === "none" ? "Naming Rights removido." : `🤝 Contrato assinado: +${fmtMoney(deal.bonusPerWeek)}/rodada!`, "info");
   render();
 }
 
@@ -1711,6 +2466,21 @@ function migrateSave(d){
     if(p.cg == null) p.cg = 0;
     if(p.lastDelta == null) p.lastDelta = 0;
   }));
+  Object.entries(d.teams).forEach(([nm, t]) => {
+    const div = t.division || 0;
+    if(!t.stadiumName) t.stadiumName = defaultStadiumName(nm);
+    if(t.ticketPrice == null) t.ticketPrice = [20, 32, 48, 75][div] || 20;
+    if(t.vipBoxes == null) t.vipBoxes = [10, 25, 45, 70][div] || 10;
+    if(t.lighting == null) t.lighting = [15, 30, 50, 80][div] || 15;
+    if(t.academy == null) t.academy = [15, 30, 45, 65][div] || 15;
+    if(!t.namingRights) t.namingRights = "none";
+    if(t.recordAttendance == null) t.recordAttendance = 0;
+    if(t.recordGate == null) t.recordGate = 0;
+    if(!Array.isArray(t.attendanceHistory)) t.attendanceHistory = [];
+  });
+  d.trophyDetails = d.trophyDetails || [];
+  d.unlockedBadges = d.unlockedBadges || {};
+  d.seasonFinances = d.seasonFinances || { gate:0, vip:0, matchday:0, socio:0, prizes:0, wages:0, upkeep:0, transfersIn:0, transfersOut:0 };
   return d;
 }
 
@@ -1735,6 +2505,12 @@ function ensureConsistency(){
   if(!othersOk) generateOtherFixtures();
   const pt = G.teams[G.teamName];
   G.selected = (G.selected || []).filter(id => pt.squad.some(p => p.id === id));
+  if(!G.supercup) G.supercup = setupSupercup();
+  if(!G.continental) G.continental = setupContinental(G.qualifiedContinental);
+  if(!G.seasonFinances) G.seasonFinances = { gate:0, vip:0, matchday:0, socio:0, prizes:0, wages:0, upkeep:0, transfersIn:0, transfersOut:0 };
+  if(!G.trophyDetails) G.trophyDetails = [];
+  if(!G.unlockedBadges) G.unlockedBadges = {};
+  checkSpecialBadges();
   if(G.freeAgents.length < 8) refreshFreeAgents();
   if(G.phase === "season" && G.selected.length < 11) autoSelectXI();
 }
@@ -1816,6 +2592,28 @@ let standingsDiv = null;
 let mktPos = "ALL";
 let mktAffordable = true;
 let cupShowAll = false;
+let compTab = "list"; // list | cup | continental
+let stadiumTab = "overview"; // overview | estimator | history
+let stadiumSimScenario = "normal"; // normal | rival | cup | final
+let managerTab = "trophies"; // trophies | badges | profile
+let pendingConfirmFn = null;
+
+function openConfirmModal(title, message, onConfirm){
+  pendingConfirmFn = onConfirm;
+  openModal(title, `
+    <p class="mb">${message}</p>
+    <div class="flex-row" style="justify-content:flex-end; margin-top:14px">
+      <button class="btn" onclick="pendingConfirmFn=null;closeModal()">Cancelar</button>
+      <button class="btn danger" onclick="runPendingConfirm()">Confirmar</button>
+    </div>
+  `, true);
+}
+function runPendingConfirm(){
+  const fn = pendingConfirmFn;
+  pendingConfirmFn = null;
+  closeModal();
+  if(typeof fn === "function") fn();
+}
 
 // Fullscreen
 function isFullscreenActive(){
@@ -1871,21 +2669,21 @@ function openModal(title, body, raw=false){
 function closeModal(){ activeModal = null; renderModal(); renderBottomBar(); }
 function renderModal(){
   if(!activeModal){ modalRoot.innerHTML = ""; return; }
+  const hasCustomActions = activeModal.raw && (activeModal.body.includes("runPendingConfirm()") || activeModal.body.includes("saveStadiumName()"));
   modalRoot.innerHTML = `
-    <div class="modal-bg" onclick="closeModal()">
+    <div class="modal-bg" onclick="pendingConfirmFn=null;closeModal()">
       <div class="modal" role="dialog" aria-modal="true" aria-label="${activeModal.title}" onclick="event.stopPropagation()">
         <h2>${activeModal.title}</h2>
         <div class="mb" style="white-space:${activeModal.raw ? 'normal' : 'pre-line'}; line-height:1.6; font-size:0.92rem">${activeModal.body}</div>
-        <div class="flex-row" style="justify-content:flex-end">
+        ${hasCustomActions ? '' : `<div class="flex-row" style="justify-content:flex-end">
           <button class="btn primary" onclick="closeModal()">OK <span class="key-hint">Enter / Esc</span></button>
-        </div>
+        </div>`}
       </div>
     </div>`;
 }
 // --------------- RENDER ---------------
 function render(focusKeyboardRow = false){
   const prevScrollY = window.scrollY;
-  const prevNavScroll = document.querySelector(".nav") ? document.querySelector(".nav").scrollLeft : 0;
   renderModal();
   renderBottomBar();
 
@@ -1912,8 +2710,6 @@ function render(focusKeyboardRow = false){
   }
   app.innerHTML = html;
 
-  const navEl = document.querySelector(".nav");
-  if(navEl) navEl.scrollLeft = prevNavScroll;
   window.scrollTo(0, prevScrollY);
   if(focusKeyboardRow){
     requestAnimationFrame(() => {
@@ -1923,16 +2719,31 @@ function render(focusKeyboardRow = false){
   }
 }
 
+let dosClassicTheme = false;
+function toggleDosTheme(){
+  dosClassicTheme = !dosClassicTheme;
+  document.body.classList.toggle("dos-classic", dosClassicTheme);
+  render();
+}
+
 function renderTopbar(){
   const pt = G.teams[G.teamName];
   const div = DIVISIONS[pt.division];
   const badge = DIV_KEY[pt.division];
   const progress = clamp((G.week-1)/WEEKS_PER_SEASON*100, 0, 100);
   const xiStr = Math.round(teamStrength(G.teamName));
-  const fsLabel = isFullscreenActive() ? "⛶ Sair" : "⛶";
+  const fsLabel = isFullscreenActive() ? "⛶ Sair Full" : "⛶ Tela Cheia";
   const f5 = (G.manager.form5 || []).map(r => `<span class="chip ${r==='V'?'v':r==='E'?'e':'d'}">${r}</span>`).join("");
-  const roundTxt = G.week > WEEKS_PER_SEASON ? "Fim da temporada" : `Rodada <strong>${G.week}</strong>/${WEEKS_PER_SEASON}`;
+  const roundTxt = G.week > WEEKS_PER_SEASON ? "FIM DE TEMPORADA" : `RODADA <strong>${G.week}</strong>/${WEEKS_PER_SEASON}`;
   return `
+  <div class="dos-sysbar">
+    <span>█▓▒░ ASTRUM FM BRASIL v${APP_VERSION} [SYS-DOS] ░▒▓█</span>
+    <div class="sys-actions">
+      <button class="sys-btn" onclick="toggleDosTheme()">🖥️ ${dosClassicTheme ? 'Tema Padrão' : 'Modo VGA/DOS'}</button>
+      <button class="sys-btn" onclick="toggleFullScreen()">${fsLabel}</button>
+      <button class="sys-btn" onclick="stopAutoPlay();currentView='title';render()">🏠 Menu Inicial</button>
+    </div>
+  </div>
   <div class="topbar">
     <div class="flex-row">
       <span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:${pt.kit[0]};border:2px solid ${pt.kit[1]}"></span>
@@ -1940,13 +2751,12 @@ function renderTopbar(){
       <span class="badge ${badge}">${div}</span>
       <span class="stat-pill info" title="Confiança da diretoria">👔 ${G.manager.boardConfidence}%</span>
     </div>
-    <div class="meta">Temp <strong>${G.season}</strong> · ${roundTxt}</div>
+    <div class="meta">TEMP <strong>${G.season}</strong> · ${roundTxt}</div>
     <div class="money mono">${fmtMoney(pt.money)}</div>
-    <div class="meta">Força XI: <strong class="mono" style="color:var(--text)">${xiStr}</strong></div>
+    <div class="meta">FORÇA XI: <strong class="mono" style="color:var(--text)">${xiStr}</strong></div>
     <div class="spacer"></div>
     <div class="flex-row" style="gap:4px">${f5}</div>
-    <div class="meta small mono">${pt.points} pts (${pt.won}V ${pt.drawn}E ${pt.lost}D)</div>
-    <button class="btn sm" onclick="toggleFullScreen()" title="Tela Cheia (F)" aria-label="Tela cheia">${fsLabel}</button>
+    <div class="meta small mono">${pt.points} PTS (${pt.won}V ${pt.drawn}E ${pt.lost}D)</div>
   </div>
   <div class="season-bar"><div class="fill" style="width:${progress}%"></div></div>`;
 }
@@ -1968,26 +2778,41 @@ function renderAutoPlayBanner(){
   </div>`;
 }
 
+function stepNavTab(delta){
+  const cur = NAV_TABS.indexOf(currentView);
+  const next = (cur + delta + NAV_TABS.length) % NAV_TABS.length;
+  setView(NAV_TABS[next]);
+}
+
 function renderNav(){
   const items = [
-    ["home","Início","1"], ["squad","Elenco","2"], ["tactics","Escalação","3"],
-    ["transfers","Mercado","4"], ["standings","Tabela","5"], ["cup","Copa","6"],
-    ["stats","Artilharia","7"], ["finances","Finanças","8"], ["stadium","Estádio","9"],
-    ["manager","Perfil","0"]
+    ["home","🏠 Início","1"],
+    ["squad","👥 Elenco","2"],
+    ["tactics","📋 Escalação","3"],
+    ["transfers","💼 Mercado","4"],
+    ["standings","📊 Tabela","5"],
+    ["cup","🏆 Competições","6"],
+    ["stats","⚽ Artilharia","7"],
+    ["finances","🏦 Finanças","8"],
+    ["stadium","🏟️ Estádio","9"],
+    ["manager","🎖️ Troféus","0"]
   ];
   return `
-  <div class="nav-wrap">
+  <div class="nav-wrap" role="navigation" aria-label="Menu Principal">
     <div class="nav">${items.map(([v,l,k])=>
-      `<button class="${currentView===v?'active':''}" onclick="setView('${v}')">
-        <span>${l}</span><span class="key-hint">${k}</span>
+      `<button class="${currentView===v?'active':''}" onclick="setView('${v}')" title="${l} (Tecla ${k})">
+        <span class="nav-label">${l}</span><span class="key-hint">${k}</span>
       </button>`
     ).join("")}</div>
-    <div class="flex-row hide-mobile">
-      <button class="btn primary" onclick="doPlayWeek()">${playLabel()} <span class="key-hint">P</span></button>
+    <div class="cmd-bar">
+      <button class="btn primary" onclick="doPlayWeek()">${playLabel()} Rodada <span class="key-hint">P</span></button>
       <button class="btn ${autoPlayActive?'danger':'gold'}" onclick="startAutoPlay(0)">
-        ${autoPlayActive ? '⏹ Parar' : '▶▶ Auto'} <span class="key-hint">M</span>
+        ${autoPlayActive ? '⏹ Parar Auto' : '▶▶ Auto Play'} <span class="key-hint">M</span>
       </button>
-      <button class="btn" onclick="manualSave()" aria-label="Salvar">💾</button>
+      <button class="btn" onclick="autoSelectXI();showMsg('⚡ Auto XI escalado!');render()">⚡ Auto XI <span class="key-hint">A</span></button>
+      <button class="btn" onclick="manualSave()" aria-label="Salvar">💾 Salvar <span class="key-hint">S</span></button>
+      <button class="btn" onclick="stepNavTab(-1)" title="Aba Anterior (←)">◀ Aba Ant.</button>
+      <button class="btn" onclick="stepNavTab(1)" title="Próxima Aba (→)">Próx. Aba ▶</button>
     </div>
   </div>`;
 }
@@ -2015,7 +2840,9 @@ function renderHome(){
       <p class="mb-1">Posição: <strong>${pos}º</strong> de ${TEAMS_PER_DIV} na ${DIVISIONS[pt.division]}</p>
       <p class="mb-1">Próxima rodada: <strong style="color:var(--accent)">${nextMatch}</strong></p>
       ${nx && !endOfSeason ? `<p class="mb-1 small muted">Força: você <strong class="mono" style="color:var(--text)">${myStr}</strong> × adversário <strong class="mono" style="color:var(--text)">${nx.oppStr}</strong></p>` : ""}
+      ${G.week === SUPERCUP_WEEK && G.supercup && !G.supercup.played ? `<p class="mb-1">⚡ <strong class="warn">Final da Supercopa do Brasil: ${G.supercup.home} × ${G.supercup.away}</strong></p>` : ""}
       ${isCupWeek() ? `<p class="mb-1">🏆 <strong class="cup-color">Rodada de Copa do Brasil — ${CUP_ROUND_NAMES[G.cup.round]}</strong></p>` : ""}
+      ${isContinentalWeek() ? `<p class="mb-1">🌎 <strong style="color:var(--blue)">Rodada da Copa Continental — ${CONT_ROUND_NAMES[G.continental.round]}</strong></p>` : ""}
       <p class="mb-1">Janela do Mercado: ${G.transferWeek ? '<span class="success font-bold">ABERTA</span>' : `<span class="muted">Abre na rodada ${G.week + (3 - (G.week%3||3))}</span>`}</p>
       <p class="mb-1">Titulares escalados: <strong class="${G.selected.length===11?'success':'error'}">${G.selected.length}/11</strong></p>
       <div class="flex-row mt">
@@ -2084,15 +2911,32 @@ function renderHome(){
 function renderLastMatchCard(){
   const m = lastMatch;
   const cm = m.cupMatch;
+  const contm = m.contMatch;
+  const scm = m.supercupMatch;
+  const att = m.attendanceInfo;
   return `<div class="card">
-    <h3>🏟️ Último Jogo</h3>
+    <h3>
+      <span>🏟️ Último Jogo</span>
+      ${att ? `<span class="small muted font-normal">👥 Público: <strong>${att.attendance.toLocaleString()}</strong> (${att.occPct}%) · Renda Casa: <strong class="success">${fmtMoney(att.homeMatchTotal)}</strong></span>` : ''}
+    </h3>
     <div class="match-score"><span class="home">${m.home}</span> <span class="mono">${m.hg} x ${m.ag}</span> <span class="away">${m.away}</span></div>
     ${m.events && m.events.length ? m.events.map(e => `<div class="log-line ${e.type} text-center">${e.text}</div>`).join("") : ''}
+    ${scm ? `
+      <div style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--gold)">
+        <div class="small warn font-bold">⚡ Supercopa do Brasil — Final Única</div>
+        <div class="log-line goal">${scm.home} ${scm.hg} x ${scm.ag} ${scm.away}${scm.extraInfo || ''} · Campeão: ${scm.winner}</div>
+      </div>` : ''}
     ${cm ? `
       <div style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--cup)">
         <div class="small cup-color font-bold">🏆 Copa do Brasil — ${m.cupRoundName || 'Copa'}</div>
         <div class="log-line cup">${cm.home} ${cm.hg} x ${cm.ag} ${cm.away}${cm.extraInfo || ''}</div>
         ${(cm.events || []).map(e => `<div class="log-line ${e.type} text-center">${e.text}</div>`).join("")}
+      </div>` : ''}
+    ${contm ? `
+      <div style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--blue)">
+        <div class="small font-bold" style="color:var(--blue)">🌎 Copa Continental — ${m.contRoundName || 'Continental'}</div>
+        <div class="log-line" style="color:var(--blue);font-weight:700">${contm.home} ${contm.hg} x ${contm.ag} ${contm.away}${contm.extraInfo || ''}</div>
+        ${(contm.events || []).map(e => `<div class="log-line ${e.type} text-center">${e.text}</div>`).join("")}
       </div>` : ''}
   </div>`;
 }
@@ -2325,11 +3169,12 @@ function doSign(id){
 function doRelease(id){
   const p = G.teams[G.teamName].squad.find(x => x.id === id);
   if(!p) return;
-  if(!confirm(`Dispensar ${p.name}? Multa rescisória: ${fmtMoney(p.wage * 6)}.`)) return;
-  const r = releasePlayer(id);
-  showMsg(r.msg, r.ok ? "info" : "error");
-  if(r.ok) saveGame();
-  render();
+  openConfirmModal("✂ Dispensar Jogador", `Deseja rescindir o contrato de <strong>${p.name}</strong>? Multa rescisória: <strong class="warn">${fmtMoney(p.wage * 6)}</strong>.`, () => {
+    const r = releasePlayer(id);
+    showMsg(r.msg, r.ok ? "info" : "error");
+    if(r.ok) saveGame();
+    render();
+  });
 }
 function renderStandings(){
   const pt = G.teams[G.teamName];
@@ -2364,9 +3209,174 @@ function renderStandings(){
   </div>`;
 }
 function renderCup(){
+  const pt = G.teams[G.teamName];
   const cup = G.cup;
+  const cont = G.continental;
+  const sc = G.supercup;
+
+  const navTabs = `
+  <div class="subnav">
+    <button class="btn sm ${compTab==='list'?'primary':''}" onclick="compTab='list';render()">📋 Lista de Competições & Premiações</button>
+    <button class="btn sm ${compTab==='cup'?'cup':''}" onclick="compTab='cup';render()">🏆 Copa do Brasil</button>
+    <button class="btn sm ${compTab==='continental'?'gold':''}" onclick="compTab='continental';render()">🌎 Continental & ⚡ Supercopa</button>
+  </div>`;
+
+  if(compTab === "list"){
+    const champs = [0,1,2,3].map(d => getStandings(d)[0]);
+    const cupStatus = !cup ? "—" : cup.winner === G.teamName ? "Campeão 🏆" : cup.playerStillIn ? `Ativo (${CUP_ROUND_NAMES[Math.min(cup.round,5)]})` : "Eliminado";
+    const contStatus = !cont || !cont.playerQualified ? "Não classificado (Exige G-4 Série A ou título da Copa)" : cont.winner === G.teamName ? "Campeão 🌎" : cont.playerStillIn ? `Ativo (${CONT_ROUND_NAMES[Math.min(cont.round,3)]})` : "Eliminado";
+    const scIn = sc && (sc.home === G.teamName || sc.away === G.teamName);
+    const scStatus = !sc ? "—" : sc.played ? (sc.winner === G.teamName ? "Campeão ⚡" : scIn ? "Vice-campeão" : `Vencida por ${sc.winner}`) : (scIn ? `Final na Rodada ${SUPERCUP_WEEK}` : `${sc.home} × ${sc.away} (Rod. ${SUPERCUP_WEEK})`);
+
+    return navTabs + `
+    <div class="card active-pane">
+      <h3>
+        <span>🏆 Calendário Oficial de Competições — Temporada ${G.season}</span>
+        <span class="small muted font-normal">Premiações pagas direto no caixa do clube</span>
+      </h3>
+      <div class="grid-2">
+        <div class="comp-card ${pt.division===3?'active-comp':''}">
+          <div>
+            <div class="flex-row" style="justify-content:space-between;margin-bottom:6px">
+              <span class="badge a">Série A · 1ª Divisão</span>
+              <span class="small mono warn font-bold">Campeão: R$ 2,50M</span>
+            </div>
+            <div class="font-bold mb-1">🥇 Brasileirão Série A (18 clubes · 34 rodadas)</div>
+            <p class="small muted mb-1">Elite nacional em turno e returno. G-4 classifica para a Copa Continental e o campeão disputa a Supercopa do Brasil. Z-4 cai para a Série B.</p>
+          </div>
+          <div class="small" style="border-top:1px solid #1d2b38;padding-top:6px">
+            Líder atual: <strong>${champs[3] ? champs[3].name : '—'}</strong> · Seu status: <strong>${pt.division===3 ? 'Disputando ★' : 'Fora da divisão'}</strong>
+          </div>
+        </div>
+
+        <div class="comp-card ${pt.division===2?'active-comp':''}">
+          <div>
+            <div class="flex-row" style="justify-content:space-between;margin-bottom:6px">
+              <span class="badge b">Série B · 2ª Divisão</span>
+              <span class="small mono warn font-bold">Campeão: R$ 650K</span>
+            </div>
+            <div class="font-bold mb-1">🥈 Brasileirão Série B (18 clubes · 34 rodadas)</div>
+            <p class="small muted mb-1">Divisão de acesso à elite. Os 4 primeiros (G-4) sobem para a Série A e recebem premiação; os 4 últimos (Z-4) caem para a Série C.</p>
+          </div>
+          <div class="small" style="border-top:1px solid #1d2b38;padding-top:6px">
+            Líder atual: <strong>${champs[2] ? champs[2].name : '—'}</strong> · Seu status: <strong>${pt.division===2 ? 'Disputando ★' : 'Fora da divisão'}</strong>
+          </div>
+        </div>
+
+        <div class="comp-card ${pt.division===1?'active-comp':''}">
+          <div>
+            <div class="flex-row" style="justify-content:space-between;margin-bottom:6px">
+              <span class="badge c">Série C · 3ª Divisão</span>
+              <span class="small mono warn font-bold">Campeão: R$ 220K</span>
+            </div>
+            <div class="font-bold mb-1">🥉 Brasileirão Série C (18 clubes · 34 rodadas)</div>
+            <p class="small muted mb-1">Terceiro escalão nacional. G-4 conquista o acesso à Série B com bônus financeiro; Z-4 é rebaixado para a Série D.</p>
+          </div>
+          <div class="small" style="border-top:1px solid #1d2b38;padding-top:6px">
+            Líder atual: <strong>${champs[1] ? champs[1].name : '—'}</strong> · Seu status: <strong>${pt.division===1 ? 'Disputando ★' : 'Fora da divisão'}</strong>
+          </div>
+        </div>
+
+        <div class="comp-card ${pt.division===0?'active-comp':''}">
+          <div>
+            <div class="flex-row" style="justify-content:space-between;margin-bottom:6px">
+              <span class="badge d">Série D · 4ª Divisão</span>
+              <span class="small mono warn font-bold">Campeão: R$ 100K</span>
+            </div>
+            <div class="font-bold mb-1">🏅 Brasileirão Série D (18 clubes · 34 rodadas)</div>
+            <p class="small muted mb-1">Ponto de partida da pirâmide nacional. G-4 garante acesso à Série C; não há rebaixamento.</p>
+          </div>
+          <div class="small" style="border-top:1px solid #1d2b38;padding-top:6px">
+            Líder atual: <strong>${champs[0] ? champs[0].name : '—'}</strong> · Seu status: <strong>${pt.division===0 ? 'Disputando ★' : 'Fora da divisão'}</strong>
+          </div>
+        </div>
+
+        <div class="comp-card" style="border-color:var(--cup)">
+          <div>
+            <div class="flex-row" style="justify-content:space-between;margin-bottom:6px">
+              <span class="badge cup">Mata-Mata Nacional</span>
+              <span class="small mono cup-color font-bold">Até R$ 2,16M acum.</span>
+            </div>
+            <div class="font-bold mb-1">🏆 Copa do Brasil (64 clubes · 6 fases)</div>
+            <p class="small muted mb-1">Disputada nas rodadas 5, 10, 15, 20, 25 e 30. Paga cotas milionárias a cada fase avançada e garante vaga na Supercopa e na Copa Continental!</p>
+          </div>
+          <div class="small" style="border-top:1px solid #1d2b38;padding-top:6px;display:flex;justify-content:space-between;align-items:center">
+            <span>Status: <strong>${cupStatus}</strong></span>
+            <button class="btn sm cup" onclick="compTab='cup';render()">Ver Chave</button>
+          </div>
+        </div>
+
+        <div class="comp-card cont-comp">
+          <div>
+            <div class="flex-row" style="justify-content:space-between;margin-bottom:6px">
+              <span class="badge cont">Continental · 16 Clubes</span>
+              <span class="small mono font-bold" style="color:var(--blue)">Até R$ 5,50M acum.</span>
+            </div>
+            <div class="font-bold mb-1">🌎 Copa Continental (Libertadores)</div>
+            <p class="small muted mb-1">Reúne o G-4 da Série A, o campeão da Copa do Brasil e os gigantes da América do Sul nas rodadas 8, 16, 24 e 32.</p>
+          </div>
+          <div class="small" style="border-top:1px solid #1d2b38;padding-top:6px;display:flex;justify-content:space-between;align-items:center">
+            <span>Status: <strong>${contStatus}</strong></span>
+            <button class="btn sm" onclick="compTab='continental';render()">Ver Torneio</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="comp-card super-comp mt">
+        <div class="flex-row" style="justify-content:space-between">
+          <div>
+            <span class="badge super">Final Única · Rodada 3</span>
+            <strong style="margin-left:8px">⚡ Supercopa do Brasil</strong>
+            <span class="small muted" style="margin-left:6px">— Campeão da Série A × Campeão da Copa do Brasil</span>
+          </div>
+          <div class="small mono warn font-bold">Campeão: R$ 1,50M · Vice: R$ 500K</div>
+        </div>
+        <div class="small muted">Status na Temp. ${G.season}: <strong style="color:var(--text)">${scStatus}</strong></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>💰 Tabela Oficial de Premiações por Competição</h3>
+      <div class="grid-2">
+        <div>
+          <h4 class="small muted mb-1" style="text-transform:uppercase">Campeonato Brasileiro (Fim da Temporada)</h4>
+          <div class="table-wrap">
+            <table>
+              <tr><th>Posição</th><th>Série A</th><th>Série B</th><th>Série C</th><th>Série D</th></tr>
+              <tr><td class="font-bold warn">1º (Campeão)</td><td class="mono success">R$ 2,50M</td><td class="mono success">R$ 650K</td><td class="mono success">R$ 220K</td><td class="mono success">R$ 100K</td></tr>
+              <tr><td class="font-bold">2º (Vice)</td><td class="mono">R$ 1,60M</td><td class="mono">R$ 380K</td><td class="mono">R$ 130K</td><td class="mono">R$ 60K</td></tr>
+              <tr><td class="font-bold">3º Lugar</td><td class="mono">R$ 1,20M</td><td class="mono">R$ 250K</td><td class="mono">R$ 90K</td><td class="mono">R$ 45K</td></tr>
+              <tr><td class="font-bold">4º Lugar (G-4)</td><td class="mono">R$ 950K</td><td class="mono">R$ 180K</td><td class="mono">R$ 65K</td><td class="mono">R$ 35K</td></tr>
+              <tr><td>5º ao 6º</td><td class="mono">R$ 750K–600K</td><td class="mono">R$ 90K–70K</td><td class="mono">R$ 35K–25K</td><td class="mono">R$ 18K–12K</td></tr>
+              <tr><td>7º ao 14º</td><td class="mono">R$ 500K–130K</td><td class="mono">Até 8º (40K)</td><td class="mono">—</td><td class="mono">—</td></tr>
+            </table>
+          </div>
+        </div>
+        <div>
+          <h4 class="small muted mb-1" style="text-transform:uppercase">Copas & Premiações Individuais</h4>
+          <div class="table-wrap">
+            <table>
+              <tr><th>Torneio / Prêmio</th><th>Fase / Condição</th><th>Valor Pago</th></tr>
+              <tr><td>🏆 <strong>Copa do Brasil</strong></td><td>1ª / 2ª / Oitavas / Quartas</td><td class="mono">30K / 60K / 120K / 250K</td></tr>
+              <tr><td>🏆 <strong>Copa do Brasil</strong></td><td>Semifinal / Título Final</td><td class="mono success">R$ 500K / R$ 1,20M</td></tr>
+              <tr><td>🌎 <strong>Copa Continental</strong></td><td>Oitavas / Quartas / Semi</td><td class="mono">300K / 600K / 1,10M</td></tr>
+              <tr><td>🌎 <strong>Copa Continental</strong></td><td>Vice / Campeão</td><td class="mono success">R$ 1,00M / R$ 3,50M</td></tr>
+              <tr><td>⚡ <strong>Supercopa do Brasil</strong></td><td>Vice / Campeão (Rod. 3)</td><td class="mono warn">R$ 500K / R$ 1,50M</td></tr>
+              <tr><td>👟 <strong>Chuteira & Garçom</strong></td><td>Artilheiro / Líder Assist.</td><td class="mono">R$ 10K a R$ 150K</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  if(compTab === "continental"){
+    return navTabs + renderContinentalAndSupercup();
+  }
+
+  // compTab === 'cup' (Copa do Brasil)
   if(!cup){
-    return `<div class="card cup-card"><h3>🏆 Copa do Brasil</h3><p class="muted">Copa não disponível nesta temporada.</p></div>`;
+    return navTabs + `<div class="card cup-card"><h3>🏆 Copa do Brasil</h3><p class="muted">Copa não disponível nesta temporada.</p></div>`;
   }
 
   let statusHtml = '';
@@ -2382,24 +3392,23 @@ function renderCup(){
     const playerNext = cup.currentMatches.find(m => m.home === G.teamName || m.away === G.teamName);
     if(playerNext){
       const opp = playerNext.home === G.teamName ? playerNext.away : playerNext.home;
-      statusHtml = `<p class="success font-bold">✅ Classificado — Próximo adversário: ${opp} (${CUP_ROUND_NAMES[cup.round]})</p>`;
+      statusHtml = `<p class="success font-bold">✅ Classificado — Próximo adversário: ${opp} (${CUP_ROUND_NAMES[cup.round]} · Rodada ${CUP_WEEKS[cup.round]})</p>`;
     } else {
       statusHtml = `<p class="success font-bold">✅ Você está na ${CUP_ROUND_NAMES[cup.round] || 'Copa'}</p>`;
     }
   }
 
-  // Fase atual
   const ordered = [...cup.currentMatches].sort((a,b) => ((b.home===G.teamName||b.away===G.teamName)?1:0) - ((a.home===G.teamName||a.away===G.teamName)?1:0));
   const currentRound = cupShowAll ? ordered : ordered.slice(0, 8);
   const roundName = CUP_ROUND_NAMES[Math.min(cup.round, CUP_ROUND_NAMES.length-1)];
 
-  return `<div class="card cup-card">
+  return navTabs + `<div class="card cup-card">
     <h3>
       <span>🏆 Copa do Brasil — ${roundName}</span>
       <span class="badge cup">Temp. ${G.season}</span>
     </h3>
     ${statusHtml}
-    <p class="small muted mb">Premiação acumulada até aqui: até ${fmtMoney(CUP_PRIZES[CUP_PRIZES.length-1])} ao campeão</p>
+    <p class="small muted mb">Cotas por fase: 1ª (${fmtMoney(CUP_PRIZES[0])}) · 2ª (${fmtMoney(CUP_PRIZES[1])}) · Oitavas (${fmtMoney(CUP_PRIZES[2])}) · Quartas (${fmtMoney(CUP_PRIZES[3])}) · Semi (${fmtMoney(CUP_PRIZES[4])}) · Campeão (${fmtMoney(CUP_PRIZES[5])})</p>
 
     <h4 style="color:var(--cup);margin:12px 0 8px">Confrontos da Fase Atual:</h4>
     <div style="max-height:400px;overflow-y:auto">
@@ -2422,10 +3431,78 @@ function renderCup(){
         const won = myMatch.winner === G.teamName;
         return `<div class="bracket-match ${won?'win':'lose'}">
           <span class="small muted">${CUP_ROUND_NAMES[ri]}</span>
-          <span style="flex:1;text-align:center">${myMatch.home} <strong class="mono">${myMatch.hg} x ${myMatch.ag}</strong> ${myMatch.away}</span>
+          <span style="flex:1;text-align:center">${myMatch.home} <strong class="mono">${myMatch.hg} x ${myMatch.ag}</strong> ${myMatch.away}${myMatch.extraInfo||''}</span>
           <span>${won?'<span class="success">✓</span>':'<span class="error">✗</span>'}</span>
         </div>`;
       }).join("")}
+    ` : ''}
+  </div>`;
+}
+
+function renderContinentalAndSupercup(){
+  const sc = G.supercup;
+  const cont = G.continental;
+  const scCard = sc ? `
+  <div class="card" style="border-color:var(--gold)">
+    <h3>
+      <span style="color:var(--gold)">⚡ Supercopa do Brasil — Temporada ${G.season}</span>
+      <span class="badge super">Rodada ${SUPERCUP_WEEK}</span>
+    </h3>
+    <p class="small muted mb">Encontro anual entre o Campeão da Série A e o Campeão da Copa do Brasil. Prêmio: <strong>${fmtMoney(SUPERCUP_PRIZES.winner)}</strong> ao campeão e <strong>${fmtMoney(SUPERCUP_PRIZES.runnerUp)}</strong> ao vice.</p>
+    <div class="bracket-match ${sc.home===G.teamName||sc.away===G.teamName?'player':''}" style="padding:10px 14px;font-size:0.95rem">
+      <span style="flex:1;font-weight:700">${sc.home}</span>
+      <span class="mono font-bold" style="color:var(--gold);padding:0 12px">${sc.played ? `${sc.hg} x ${sc.ag}${sc.extraInfo||''}` : `vs (Rod. ${SUPERCUP_WEEK})`}</span>
+      <span style="flex:1;text-align:right;font-weight:700">${sc.away}</span>
+    </div>
+    ${sc.played ? `<p class="small mt">🏆 Campeão: <strong class="warn">${sc.winner}</strong> · Vice: <strong>${sc.runnerUp}</strong></p>` : ''}
+  </div>` : '';
+
+  if(!cont) return scCard;
+  const rName = CONT_ROUND_NAMES[Math.min(cont.round, CONT_ROUND_NAMES.length-1)];
+  let contStatus = '';
+  if(cont.winner){
+    contStatus = cont.winner === G.teamName
+      ? `<p class="success font-bold mb">🌎🏆 VOCÊ CONQUISTOU A AMÉRICA! Campeão da Copa Continental!</p>`
+      : `<p class="mb">Campeão Continental: <strong style="color:var(--blue)">${cont.winner}</strong> (Vice: ${cont.runnerUp || '—'})</p>`;
+  } else if(!cont.playerQualified){
+    contStatus = `<p class="muted small mb">Seu clube não está classificado nesta temporada. Termine no <strong>G-4 da Série A</strong> ou vença a <strong>Copa do Brasil</strong> para disputar a Copa Continental no próximo ano!</p>`;
+  } else if(cont.playerEliminated){
+    contStatus = `<p class="warn font-bold mb">❌ Eliminado da Copa Continental nesta temporada.</p>`;
+  } else {
+    const myNext = cont.currentMatches.find(m => m.home === G.teamName || m.away === G.teamName);
+    const opp = myNext ? (myNext.home === G.teamName ? myNext.away : myNext.home) : "—";
+    contStatus = `<p class="success font-bold mb">✅ Classificado — Próximo duelo: ${opp} (${rName} · Rodada ${CONT_WEEKS[cont.round]})</p>`;
+  }
+
+  return scCard + `
+  <div class="card" style="border-color:var(--blue)">
+    <h3>
+      <span style="color:var(--blue)">🌎 Copa Continental (Libertadores) — ${rName}</span>
+      <span class="badge cont">16 Clubes</span>
+    </h3>
+    ${contStatus}
+    <p class="small muted mb">Premiações: Oitavas (${fmtMoney(CONT_PRIZES[0])}) · Quartas (${fmtMoney(CONT_PRIZES[1])}) · Semifinal (${fmtMoney(CONT_PRIZES[2])}) · Vice (${fmtMoney(CONT_RUNNER_UP_PRIZE)}) · Campeão (${fmtMoney(CONT_PRIZES[3])})</p>
+    <h4 style="color:var(--blue);margin:10px 0 6px;font-size:0.88rem">Chaveamento Atual (${rName}):</h4>
+    ${cont.currentMatches.map(m => {
+      const isP = m.home === G.teamName || m.away === G.teamName;
+      return `<div class="bracket-match ${isP?'player':''}">
+        <span style="flex:1">${m.home}</span>
+        <span class="mono font-bold">${m.hg !== null ? `${m.hg} x ${m.ag}${m.extraInfo||''}` : 'vs'}</span>
+        <span style="flex:1;text-align:right">${m.away}</span>
+      </div>`;
+    }).join("")}
+    ${cont.history.length ? `
+      <h4 style="color:var(--blue);margin:14px 0 6px;font-size:0.88rem">Fases Anteriores da Copa Continental:</h4>
+      ${cont.history.map((rndArr, ri) => `
+        <div class="mb-2">
+          <div class="small muted font-bold mb-1">${CONT_ROUND_NAMES[ri]}</div>
+          ${rndArr.map(m => `<div class="bracket-match ${m.home===G.teamName||m.away===G.teamName?'player':''}">
+            <span style="flex:1">${m.home}</span>
+            <span class="mono">${m.hg} x ${m.ag}${m.extraInfo||''}</span>
+            <span style="flex:1;text-align:right">${m.away}</span>
+          </div>`).join("")}
+        </div>
+      `).join("")}
     ` : ''}
   </div>`;
 }
@@ -2437,15 +3514,15 @@ function renderStats(){
   const all = [];
   clubs.forEach(t => t.squad.forEach(p => { if((p[key] || 0) > 0) all.push({ ...p, club: t.name }); }));
   const sorted = all.sort((a,b) => (b[key]||0) - (a[key]||0) || (b.goals||0) - (a.goals||0) || (b.assists||0) - (a.assists||0)).slice(0,20);
-  const title = statsTab === "goals" ? "Artilharia" : statsTab === "assists" ? "Assistências" : "Artilharia da Copa";
-  const scopeLabel = statsTab === "cup" ? "Copa do Brasil" : (statsScope === "div" ? DIVISIONS[pt.division] : "Todas as divisões");
+  const title = statsTab === "goals" ? "Artilharia" : statsTab === "assists" ? "Assistências" : "Artilharia das Copas";
+  const scopeLabel = statsTab === "cup" ? "Copa do Brasil & Continental" : (statsScope === "div" ? DIVISIONS[pt.division] : "Todas as divisões");
 
   return `<div class="card active-pane">
     <h3><span>📊 ${title} — ${scopeLabel}</span></h3>
     <div class="flex-row mb">
       <button class="btn ${statsTab==='goals'?'primary':''}" onclick="statsTab='goals';render()">⚽ Artilheiros</button>
       <button class="btn ${statsTab==='assists'?'primary':''}" onclick="statsTab='assists';render()">🎯 Garçons</button>
-      <button class="btn cup ${statsTab==='cup'?'primary':''}" onclick="statsTab='cup';render()">🏆 Copa</button>
+      <button class="btn cup ${statsTab==='cup'?'primary':''}" onclick="statsTab='cup';render()">🏆 Copas</button>
     </div>
     <div class="flex-row mb small">
       <span class="muted">Escopo:</span>
@@ -2466,24 +3543,121 @@ function renderStats(){
     }).join("") : '<p class="muted">Nada registrado ainda. Jogue algumas rodadas!</p>'}
   </div>`;
 }
+
 function renderFinances(){
   const pt = G.teams[G.teamName];
-  const wages = pt.squad.reduce((s,p)=>s+p.wage,0);
-  const upkeep = Math.round(2000 + pt.stadium*0.15 + pt.medical*30 + pt.press*25);
-  const estTicket = Math.round(9 + pt.facilities/10 + (pt.division*6));
-  return `<div class="card">
-    <h3>🏦 Departamento Financeiro</h3>
-    <div class="grid-2 mt">
-      <div>
-        <p class="mb-2">Saldo: <strong class="money mono">${fmtMoney(pt.money)}</strong></p>
-        <p class="mb-2">Folha salarial (${pt.squad.length}): <strong class="error mono">-${fmtMoney(wages)}/rodada</strong></p>
-        <p class="mb-2">Manutenção: <strong class="error mono">-${fmtMoney(upkeep)}/rodada</strong></p>
+  const est = estimateMatchRevenue(pt, { randomize: false });
+  const sf = G.seasonFinances || { gate:0, vip:0, matchday:0, socio:0, prizes:0, wages:0, upkeep:0, transfersIn:0, transfersOut:0 };
+  const totalIn = sf.gate + sf.vip + sf.matchday + sf.socio + sf.prizes + sf.transfersIn;
+  const totalOut = sf.wages + sf.upkeep + sf.transfersOut;
+  const seasonBal = totalIn - totalOut;
+
+  // Remaining home & away matches in season
+  let remHome = 0, remAway = 0;
+  for(let w = G.week - 1; w < WEEKS_PER_SEASON; w++){
+    const row = (G.fixtures || [])[w] || [];
+    const m = row.find(x => x.home === G.teamName || x.away === G.teamName);
+    if(m){ if(m.home === G.teamName) remHome++; else remAway++; }
+  }
+  const projectedEndMoney = pt.money + (remHome * est.netHomeWeek) + (remAway * est.netAwayWeek);
+
+  return `
+  <div class="card active-pane">
+    <h3>
+      <span>🏦 Departamento Financeiro & Projeção de Caixa</span>
+      <div class="flex-row">
+        <button class="btn sm primary" onclick="stadiumTab='estimator';setView('stadium')">🧮 Simulador de Renda & Ingressos</button>
+        <button class="btn sm" onclick="compTab='list';setView('cup')">💰 Ver Premiações</button>
       </div>
-      <div>
-        <p class="mb-2">Capacidade: <strong class="mono">${pt.stadium.toLocaleString()}</strong></p>
-        <p class="mb-2">Ticket médio: <strong class="success mono">R$ ${estTicket}</strong></p>
-        <p class="small muted mt">G-4 e melhorias no CT aumentam a renda por jogo.</p>
+    </h3>
+    <div class="grid-4 mt mb">
+      <div class="kpi-box">
+        <span class="kpi-label">Saldo Atual em Caixa</span>
+        <span class="kpi-val warn">${fmtMoney(pt.money)}</span>
+        <span class="kpi-sub">Disponível para obras e mercado</span>
       </div>
+      <div class="kpi-box">
+        <span class="kpi-label">Renda Líquida (Jogo em Casa)</span>
+        <span class="kpi-val ${est.netHomeWeek>=0?'success':'error'}">${est.netHomeWeek>=0?'+':''}${fmtMoney(est.netHomeWeek)}</span>
+        <span class="kpi-sub">Público est.: ${est.attendance.toLocaleString()} (${est.occPct}%)</span>
+      </div>
+      <div class="kpi-box">
+        <span class="kpi-label">Balanço (Jogo Fora)</span>
+        <span class="kpi-val ${est.netAwayWeek>=0?'success':'error'}">${est.netAwayWeek>=0?'+':''}${fmtMoney(est.netAwayWeek)}</span>
+        <span class="kpi-sub">Sócios (${est.socios.toLocaleString()}) - Custos</span>
+      </div>
+      <div class="kpi-box">
+        <span class="kpi-label">Projeção Fim do Ano</span>
+        <span class="kpi-val ${projectedEndMoney>=0?'success':'error'}">${fmtMoney(projectedEndMoney)}</span>
+        <span class="kpi-sub">Restam ${remHome}J casa e ${remAway}J fora</span>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card" style="margin-bottom:0">
+        <h3>📈 Receitas por Rodada (Estimativa Atual)</h3>
+        <table>
+          <tr><td>🎟️ Bilheteria (Ingresso a R$ ${est.ticketPrice})</td><td class="mono success" style="text-align:right">+${fmtMoney(est.gateIncome)} <span class="muted small">(em casa)</span></td></tr>
+          <tr><td>🥂 Camarotes VIP & Hospitalidade (${pt.vipBoxes||10}%)</td><td class="mono success" style="text-align:right">+${fmtMoney(est.vipIncome)} <span class="muted small">(em casa)</span></td></tr>
+          <tr><td>🛍️ Bares, Alimentação & Loja (${pt.facilities||15}%)</td><td class="mono success" style="text-align:right">+${fmtMoney(est.matchdayIncome)} <span class="muted small">(em casa)</span></td></tr>
+          <tr><td>💳 Sócio-Torcedor (${est.socios.toLocaleString()}) & Patrocínio</td><td class="mono success" style="text-align:right">+${fmtMoney(est.socioIncome)} <span class="muted small">(toda rodada)</span></td></tr>
+          <tr style="border-top:2px solid var(--border)"><td><strong>Total Bruto (Jogo em Casa)</strong></td><td class="mono font-bold success" style="text-align:right">+${fmtMoney(est.homeMatchTotal + est.socioIncome)}</td></tr>
+        </table>
+      </div>
+
+      <div class="card" style="margin-bottom:0">
+        <h3>📉 Despesas Fixas & Acumulado na Temporada ${G.season}</h3>
+        <table>
+          <tr><td>👥 Folha Salarial (${pt.squad.length} atletas)</td><td class="mono error" style="text-align:right">-${fmtMoney(est.wages)}/rodada</td></tr>
+          <tr><td>🏟️ Manutenção do Estádio, CT & Base</td><td class="mono error" style="text-align:right">-${fmtMoney(est.upkeep)}/rodada</td></tr>
+          <tr><td>🏆 Premiações Recebidas na Temp. ${G.season}</td><td class="mono warn" style="text-align:right">+${fmtMoney(sf.prizes)}</td></tr>
+          <tr><td>🔄 Saldo de Transferências (Vendas - Compras)</td><td class="mono ${(sf.transfersIn-sf.transfersOut)>=0?'success':'error'}" style="text-align:right">${(sf.transfersIn-sf.transfersOut)>=0?'+':''}${fmtMoney(sf.transfersIn - sf.transfersOut)}</td></tr>
+          <tr style="border-top:2px solid var(--border)"><td><strong>Balanço Operacional da Temporada</strong></td><td class="mono font-bold ${seasonBal>=0?'success':'error'}" style="text-align:right">${seasonBal>=0?'+':''}${fmtMoney(seasonBal)}</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderStadiumSVG(pt, est){
+  const cap = pt.stadium || 6500;
+  const occ = est.occPct || 50;
+  const pitchCol = pt.pitch >= 80 ? "#1b5e20" : pt.pitch >= 55 ? "#2e7d32" : "#558b2f";
+  const standFill = occ >= 80 ? "#00e676" : occ >= 55 ? "#29b6f6" : "#546e7a";
+  const vipGlow = (pt.vipBoxes || 10) >= 50 ? "#ffca28" : "#37474f";
+  const hasRoof = (pt.lighting || 15) >= 60;
+  return `
+  <div class="stadium-Arena-wrap mb">
+    <svg viewBox="0 0 360 200" style="width:100%;max-width:440px;height:auto">
+      <!-- Anel Externo / Cobertura -->
+      <rect x="14" y="10" width="332" height="180" rx="34" fill="#0d1720" stroke="${hasRoof ? '#29b6f6' : '#223544'}" stroke-width="${hasRoof ? '3' : '2'}"/>
+      <!-- Arquibancadas Norte / Sul / Leste / Oeste -->
+      <rect x="64" y="18" width="232" height="22" rx="6" fill="#162430" stroke="#263b4d"/>
+      <rect x="64" y="18" width="${Math.round(232 * occ / 100)}" height="22" rx="6" fill="${standFill}" opacity="0.55"/>
+      <rect x="64" y="160" width="232" height="22" rx="6" fill="#162430" stroke="#263b4d"/>
+      <rect x="64" y="160" width="${Math.round(232 * occ / 100)}" height="22" rx="6" fill="${standFill}" opacity="0.55"/>
+      <rect x="24" y="44" width="26" height="112" rx="6" fill="#162430" stroke="#263b4d"/>
+      <rect x="24" y="${44 + Math.round(112 * (1 - occ/100))}" width="26" height="${Math.round(112 * occ / 100)}" rx="6" fill="${standFill}" opacity="0.55"/>
+      <rect x="310" y="44" width="26" height="112" rx="6" fill="#162430" stroke="#263b4d"/>
+      <rect x="310" y="${44 + Math.round(112 * (1 - occ/100))}" width="26" height="${Math.round(112 * occ / 100)}" rx="6" fill="${standFill}" opacity="0.55"/>
+      <!-- Camarotes VIP -->
+      <rect x="110" y="41" width="140" height="6" rx="3" fill="${vipGlow}"/>
+      <rect x="110" y="153" width="140" height="6" rx="3" fill="${vipGlow}"/>
+      <!-- Gramado -->
+      <rect x="60" y="50" width="240" height="100" rx="4" fill="${pitchCol}" stroke="#a5d6a7" stroke-width="1.5"/>
+      <line x1="180" y1="50" x2="180" y2="150" stroke="#a5d6a7" stroke-width="1.2"/>
+      <circle cx="180" cy="100" r="18" fill="none" stroke="#a5d6a7" stroke-width="1.2"/>
+      <rect x="60" y="75" width="26" height="50" fill="none" stroke="#a5d6a7" stroke-width="1.2"/>
+      <rect x="274" y="75" width="26" height="50" fill="none" stroke="#a5d6a7" stroke-width="1.2"/>
+      <!-- Refletores LED -->
+      <circle cx="34" cy="24" r="6" fill="#fff59d" opacity="${0.35 + (pt.lighting||15)/160}"/>
+      <circle cx="326" cy="24" r="6" fill="#fff59d" opacity="${0.35 + (pt.lighting||15)/160}"/>
+      <circle cx="34" cy="176" r="6" fill="#fff59d" opacity="${0.35 + (pt.lighting||15)/160}"/>
+      <circle cx="326" cy="176" r="6" fill="#fff59d" opacity="${0.35 + (pt.lighting||15)/160}"/>
+    </svg>
+    <div class="small muted text-center" style="margin-top:6px">
+      Lotação Projetada: <strong style="color:var(--accent)">${est.attendance.toLocaleString()} / ${cap.toLocaleString()} (${occ}%)</strong>
+      ${est.crowdBonusPct > 0 ? ` · <span class="success font-bold">🔥 Caldeirão Ativo (+${est.crowdBonusPct}% força em casa)</span>` : ''}
     </div>
   </div>`;
 }
@@ -2491,23 +3665,199 @@ function renderFinances(){
 function renderStadium(){
   const pt = G.teams[G.teamName];
   rowIndex = clamp(rowIndex, 0, STADIUM_UPGRADES.length - 1);
+  const stName = pt.stadiumName || defaultStadiumName(G.teamName);
+  const tier = getStadiumTier(pt.stadium, pt.facilities||15, pt.vipBoxes||10, pt.lighting||15);
+  const est = estimateMatchRevenue(pt, { scenario: stadiumSimScenario, randomize: false });
+  const optPrice = findOptimalTicketPrice(pt, stadiumSimScenario);
+
+  const subnav = `
+  <div class="subnav">
+    <button class="btn sm ${stadiumTab==='overview'?'primary':''}" onclick="stadiumTab='overview';render()">🏟️ Complexo & Obras (${STADIUM_UPGRADES.length})</button>
+    <button class="btn sm ${stadiumTab==='estimator'?'gold':''}" onclick="stadiumTab='estimator';render()">🧮 Estimativa de Renda & Ingressos</button>
+    <button class="btn sm ${stadiumTab==='history'?'primary':''}" onclick="stadiumTab='history';render()">📋 Borderôs & Recordes (${(pt.attendanceHistory||[]).length})</button>
+  </div>`;
+
+  if(stadiumTab === "estimator"){
+    let remHome = 0, remAway = 0;
+    for(let w = G.week - 1; w < WEEKS_PER_SEASON; w++){
+      const row = (G.fixtures || [])[w] || [];
+      const m = row.find(x => x.home === G.teamName || x.away === G.teamName);
+      if(m){ if(m.home === G.teamName) remHome++; else remAway++; }
+    }
+    const projHomeGross = remHome * (est.homeMatchTotal + est.socioIncome);
+    const projSeasonNet = (remHome * est.netHomeWeek) + (remAway * est.netAwayWeek);
+
+    return subnav + `
+    <div class="card active-pane">
+      <h3>
+        <span>🧮 Simulador de Bilheteria & Estimativa de Renda — ${stName}</span>
+        <span class="badge ${tier.badge}">${tier.name}</span>
+      </h3>
+
+      <div class="grid-2">
+        <div>
+          <div class="card" style="background:#0a1218;margin-bottom:10px">
+            <label style="color:var(--accent);font-weight:700">🎟️ Preço do Ingresso: <span class="mono" style="font-size:1.15rem">R$ ${pt.ticketPrice || 20}</span> <span class="muted small font-normal">(Ideal sugerido: R$ ${est.idealPrice} · Ótimo: R$ ${optPrice})</span></label>
+            <div class="flex-row mt mb-2">
+              <button class="btn sm" onclick="setTicketPrice((G.teams[G.teamName].ticketPrice||20)-5)">- R$ 5</button>
+              <button class="btn sm" onclick="setTicketPrice((G.teams[G.teamName].ticketPrice||20)-1)">- R$ 1</button>
+              <input type="range" class="price-slider" min="10" max="200" step="1" value="${pt.ticketPrice || 20}" oninput="setTicketPrice(this.value)">
+              <button class="btn sm" onclick="setTicketPrice((G.teams[G.teamName].ticketPrice||20)+1)">+ R$ 1</button>
+              <button class="btn sm" onclick="setTicketPrice((G.teams[G.teamName].ticketPrice||20)+5)">+ R$ 5</button>
+            </div>
+            <div class="flex-row small">
+              <span class="muted">Perfis rápidos:</span>
+              <button class="btn sm" onclick="applyTicketPreset('popular')">🔥 Popular (Lotar)</button>
+              <button class="btn sm" onclick="applyTicketPreset('balanced')">⚖ Equilibrado</button>
+              <button class="btn sm gold" onclick="applyTicketPreset('optimal')">💰 Receita Máxima (R$ ${optPrice})</button>
+              <button class="btn sm" onclick="applyTicketPreset('premium')">💎 Jogo Grande</button>
+            </div>
+          </div>
+
+          <div class="card" style="background:#0a1218;margin-bottom:0">
+            <label class="mb-1">📊 Cenário da Partida Simulada:</label>
+            <div class="flex-row">
+              <button class="btn sm ${stadiumSimScenario==='normal'?'primary':''}" onclick="stadiumSimScenario='normal';render()">Jogo Comum</button>
+              <button class="btn sm ${stadiumSimScenario==='rival'?'primary':''}" onclick="stadiumSimScenario='rival';render()">Clássico / G-4</button>
+              <button class="btn sm ${stadiumSimScenario==='cup'?'cup':''}" onclick="stadiumSimScenario='cup';render()">Mata-Mata Copa</button>
+              <button class="btn sm ${stadiumSimScenario==='final'?'gold':''}" onclick="stadiumSimScenario='final';render()">Decisão / Final</button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          ${renderStadiumSVG(pt, est)}
+        </div>
+      </div>
+
+      <div class="grid-4 mt">
+        <div class="kpi-box">
+          <span class="kpi-label">Público Estimado</span>
+          <span class="kpi-val">${est.attendance.toLocaleString()}</span>
+          <span class="kpi-sub">Ocupação: ${est.occPct}% de ${est.capacity.toLocaleString()}</span>
+        </div>
+        <div class="kpi-box">
+          <span class="kpi-label">Renda Matchday (Casa)</span>
+          <span class="kpi-val success">+${fmtMoney(est.homeMatchTotal)}</span>
+          <span class="kpi-sub">Bilheteria + VIP + Bares/Loja</span>
+        </div>
+        <div class="kpi-box">
+          <span class="kpi-label">Sócio-Torcedor & Naming</span>
+          <span class="kpi-val info">+${fmtMoney(est.socioIncome)}/rod</span>
+          <span class="kpi-sub">${est.socios.toLocaleString()} sócios ativos</span>
+        </div>
+        <div class="kpi-box">
+          <span class="kpi-label">Lucro Líquido (Casa)</span>
+          <span class="kpi-val ${est.netHomeWeek>=0?'success':'error'}">${est.netHomeWeek>=0?'+':''}${fmtMoney(est.netHomeWeek)}</span>
+          <span class="kpi-sub">Após salários e manutenção</span>
+        </div>
+      </div>
+
+      <div class="grid-2 mt">
+        <div>
+          <h4 class="small muted mb-1" style="text-transform:uppercase">Detalhamento por Jogo em Casa</h4>
+          <table>
+            <tr><td>🎟️ Bilheteria Comum (${est.attendance.toLocaleString()} × R$ ${est.ticketPrice})</td><td class="mono success" style="text-align:right">+${fmtMoney(est.gateIncome)}</td></tr>
+            <tr><td>🥂 Camarotes VIP & Hospitalidade (${pt.vipBoxes||10}%)</td><td class="mono success" style="text-align:right">+${fmtMoney(est.vipIncome)}</td></tr>
+            <tr><td>🍔 Bares, Estacionamento & Loja (${pt.facilities||15}%)</td><td class="mono success" style="text-align:right">+${fmtMoney(est.matchdayIncome)}</td></tr>
+            <tr><td>💳 Sócios + Patrocínio + Naming Rights</td><td class="mono info" style="text-align:right">+${fmtMoney(est.socioIncome)}</td></tr>
+            <tr><td>📉 Folha Salarial + Manutenção do Complexo</td><td class="mono error" style="text-align:right">-${fmtMoney(est.totalCosts)}</td></tr>
+            <tr style="border-top:2px solid var(--border)"><td><strong>Resultado Líquido em Casa</strong></td><td class="mono font-bold ${est.netHomeWeek>=0?'success':'error'}" style="text-align:right">${est.netHomeWeek>=0?'+':''}${fmtMoney(est.netHomeWeek)}</td></tr>
+          </table>
+        </div>
+        <div>
+          <h4 class="small muted mb-1" style="text-transform:uppercase">Projeção para o Restante da Temporada (${remHome}J Casa / ${remAway}J Fora)</h4>
+          <table>
+            <tr><td>Receita Bruta Estimada nos ${remHome} Jogos em Casa</td><td class="mono success" style="text-align:right">+${fmtMoney(projHomeGross)}</td></tr>
+            <tr><td>Receita de Sócios/Patrocínio nos ${remAway} Jogos Fora</td><td class="mono info" style="text-align:right">+${fmtMoney(remAway * est.socioIncome)}</td></tr>
+            <tr><td>Custo Total nas ${remHome + remAway} Rodadas Restantes</td><td class="mono error" style="text-align:right">-${fmtMoney((remHome + remAway) * est.totalCosts)}</td></tr>
+            <tr><td><strong>Balanço Acumulado Projetado</strong></td><td class="mono font-bold ${projSeasonNet>=0?'success':'error'}" style="text-align:right">${projSeasonNet>=0?'+':''}${fmtMoney(projSeasonNet)}</td></tr>
+            <tr style="border-top:2px solid var(--border)"><td><strong>Caixa Estimado no Fim do Ano</strong></td><td class="mono font-bold warn" style="text-align:right">${fmtMoney(pt.money + projSeasonNet)}</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  if(stadiumTab === "history"){
+    const hist = pt.attendanceHistory || [];
+    return subnav + `
+    <div class="card active-pane">
+      <h3>
+        <span>📋 Histórico de Borderôs & Recordes — ${stName}</span>
+        <span class="small muted font-normal">Recorde: ${(pt.recordAttendance||0).toLocaleString()} torcedores (${fmtMoney(pt.recordGate||0)})</span>
+      </h3>
+      ${hist.length ? `<div class="table-wrap">
+        <table>
+          <tr><th>Temp/Rod</th><th>Adversário</th><th>Público</th><th>Lotação</th><th>Ingresso</th><th>Bilheteria</th><th>VIP+Loja</th><th>Renda Total</th></tr>
+          ${hist.map(h => `<tr>
+            <td class="mono">T${h.season}·R${h.week}</td>
+            <td><strong>${h.opp}</strong> <span class="muted small">(${h.comp})</span></td>
+            <td class="mono font-bold">${h.attendance.toLocaleString()}</td>
+            <td class="mono ${h.occPct>=80?'success':''}">${h.occPct}%</td>
+            <td class="mono">R$ ${h.ticketPrice}</td>
+            <td class="mono">${fmtMoney(h.gateIncome)}</td>
+            <td class="mono">${fmtMoney(h.vipIncome + h.matchdayIncome)}</td>
+            <td class="mono success font-bold">${fmtMoney(h.totalIncome)}</td>
+          </tr>`).join("")}
+        </table>
+      </div>` : `<p class="muted">Nenhum jogo em casa registrado ainda. Jogue rodadas como mandante para ver os borderôs detalhados!</p>`}
+    </div>`;
+  }
+
+  // stadiumTab === 'overview'
   const statValues = {
     seats: `${pt.stadium.toLocaleString()} lug.`,
     seatsFast: `${pt.stadium.toLocaleString()} lug.`,
+    seatsMega: `${pt.stadium.toLocaleString()} lug.`,
     pitch: `${pt.pitch}%`,
     facilities: `${pt.facilities}%`,
+    vipBoxes: `${pt.vipBoxes || 10}%`,
+    lighting: `${pt.lighting || 15}%`,
     medical: `${pt.medical}%`,
-    press: `${pt.press}%`
+    press: `${pt.press}%`,
+    academy: `${pt.academy || 15}%`
   };
-  return `<div class="card active-pane">
+
+  return subnav + `
+  <div class="card active-pane">
     <h3>
-      <span>🏟️ Estádio e CT</span>
-      <span class="small muted font-normal">Caixa: ${fmtMoney(pt.money)}</span>
+      <span>🏟️ ${stName} <span class="badge ${tier.badge}" style="margin-left:6px">${tier.name}</span></span>
+      <div class="flex-row">
+        <button class="btn sm" onclick="openRenameStadiumModal()">✏️ Renomear</button>
+        <button class="btn sm gold" onclick="stadiumTab='estimator';render()">🎟️ Ingressos (R$ ${pt.ticketPrice||20})</button>
+      </div>
     </h3>
-    ${pt.stadium < 40000 ? `<p class="small warn mb">⚠️ Série A exige estádio com no mínimo 40.000 lugares (atual: ${pt.stadium.toLocaleString()}).</p>` : `<p class="small success mb">✅ Estádio homologado pela CBF.</p>`}
+    ${pt.stadium < 40000 ? `<p class="small warn mb">⚠️ Série A exige estádio com no mínimo 40.000 lugares (atual: ${pt.stadium.toLocaleString()} · faltam ${(40000 - pt.stadium).toLocaleString()} lugares).</p>` : `<p class="small success mb">✅ Arena Padrão FIFA homologada pela CBF (${pt.stadium.toLocaleString()} lugares).</p>`}
+
+    <div class="grid-2 mb">
+      <div>
+        ${renderStadiumSVG(pt, est)}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;justify-content:center">
+        <div class="kpi-box">
+          <span class="kpi-label">Estimativa de Renda por Jogo em Casa</span>
+          <span class="kpi-val success">+${fmtMoney(est.homeMatchTotal)} <span class="small font-normal muted">(Público: ${est.attendance.toLocaleString()} · ${est.occPct}%)</span></span>
+          <span class="kpi-sub">Ingresso: R$ ${est.ticketPrice} · VIP: ${fmtMoney(est.vipIncome)} · Matchday: ${fmtMoney(est.matchdayIncome)}</span>
+        </div>
+        <div class="kpi-box">
+          <span class="kpi-label">Quadro de Sócios-Torcedores & Patrocínio</span>
+          <span class="kpi-val info">${est.socios.toLocaleString()} sócios (+${fmtMoney(est.socioIncome)}/rodada)</span>
+          <span class="kpi-sub">Recorde de Público: ${(pt.recordAttendance||0).toLocaleString()} · Maior Renda: ${fmtMoney(pt.recordGate||0)}</span>
+        </div>
+        <div class="kpi-box">
+          <span class="kpi-label">Contrato de Naming Rights da Arena</span>
+          <select style="max-width:100%;padding:6px 10px;font-size:0.84rem;margin-top:4px" onchange="selectNamingRights(this.value)">
+            ${NAMING_RIGHTS_DEALS.map(d => `<option value="${d.id}" ${(pt.namingRights||'none')===d.id?'selected':''}>${d.label} ${d.bonusPerWeek ? '(+'+fmtMoney(d.bonusPerWeek)+'/rod)' : ''}</option>`).join("")}
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <h4 class="small muted mb-1" style="text-transform:uppercase">Obras de Expansão & Modernização do Complexo (Caixa: ${fmtMoney(pt.money)})</h4>
     <div class="table-wrap">
       <table>
-        <tr><th>Obra</th><th>Atual</th><th>Benefício</th><th>Custo</th><th>Ação</th></tr>
+        <tr><th>Obra / Setor</th><th>Nível Atual</th><th>Impacto no Clube</th><th>Custo</th><th>Ação</th></tr>
         ${STADIUM_UPGRADES.map((u, idx)=>`
           <tr class="${idx===rowIndex?'kb-focus':''}" onclick="rowIndex=${idx};render()">
             <td><strong>${u.label}</strong></td>
@@ -2522,37 +3872,125 @@ function renderStadium(){
   </div>`;
 }
 
+function getCoachRank(pts){
+  if(pts >= 2200) return { title: "👑 Lenda Imortal do Futebol Brasileiro", badge: "a" };
+  if(pts >= 1200) return { title: "🌟 Mestre Tático Consagrado", badge: "cup" };
+  if(pts >= 600)  return { title: "🏆 Treinador de Elite Nacional", badge: "b" };
+  if(pts >= 200)  return { title: "📈 Técnico Promissor", badge: "c" };
+  return { title: "📋 Treinador em Início de Carreira", badge: "d" };
+}
+
 function renderManager(){
   const m = G.manager;
   const totalGames = m.totalWins + m.totalDraws + m.totalLosses;
   const winPct = totalGames > 0 ? Math.round(m.totalWins/totalGames*100) : 0;
-  return `
+  const badges = G.unlockedBadges || {};
+  let prestigePts = (m.totalWins * 5) + (m.objectivesMet * 50);
+  TROPHY_CATALOG.forEach(tc => {
+    const count = badges[tc.id] || 0;
+    prestigePts += count * tc.pts;
+  });
+  const rank = getCoachRank(prestigePts);
+  const unlockedCount = TROPHY_CATALOG.filter(tc => (badges[tc.id] || 0) > 0).length;
+
+  const subnav = `
+  <div class="subnav">
+    <button class="btn sm ${managerTab==='trophies'?'gold':''}" onclick="managerTab='trophies';render()">🏆 Sala de Troféus (${(G.trophies||[]).length})</button>
+    <button class="btn sm ${managerTab==='badges'?'primary':''}" onclick="managerTab='badges';render()">🎖️ Galeria de Conquistas (${unlockedCount}/${TROPHY_CATALOG.length})</button>
+    <button class="btn sm ${managerTab==='profile'?'primary':''}" onclick="managerTab='profile';render()">👔 Carreira & Histórico</button>
+  </div>`;
+
+  const headerCard = `
   <div class="card">
-    <h3>👔 Perfil do Treinador</h3>
-    <div class="grid-2">
-      <div>
-        <p class="mb-2"><strong>${G.teamName}</strong> · ${DIVISIONS[G.teams[G.teamName].division]}</p>
-        <p class="mb-2">Temporadas no clube: <strong class="mono">${m.seasonsAtClub + 1}</strong></p>
-        <p class="mb-2">Confiança da diretoria: <strong>${m.boardConfidence}%</strong></p>
-        <div class="bar bar-conf mb-2"><div style="width:${m.boardConfidence}%"></div></div>
+    <h3>
+      <span>👔 Perfil do Treinador & Reputação</span>
+      <span class="badge ${rank.badge}">${rank.title} · ${prestigePts} pts</span>
+    </h3>
+    <div class="grid-4">
+      <div class="kpi-box">
+        <span class="kpi-label">Clube Atual</span>
+        <span class="kpi-val" style="color:var(--accent)">${G.teamName}</span>
+        <span class="kpi-sub">${DIVISIONS[G.teams[G.teamName].division]} · Temp. ${m.seasonsAtClub + 1}</span>
       </div>
-      <div>
-        <p class="mb-2">Jogos: <strong class="mono">${totalGames}</strong> · V: <span class="success mono">${m.totalWins}</span> · E: <span class="warn mono">${m.totalDraws}</span> · D: <span class="error mono">${m.totalLosses}</span></p>
-        <p class="mb-2">Aproveitamento: <strong class="mono ${winPct>=50?'success':'error'}">${winPct}%</strong></p>
-        <p class="mb-2">Melhor campanha: <strong class="mono">${m.bestFinish < 99 ? m.bestFinish + 'º lugar' : '—'}</strong></p>
-        <p class="mb-2">Metas cumpridas: <strong class="mono success">${m.objectivesMet}</strong></p>
+      <div class="kpi-box">
+        <span class="kpi-label">Retrospecto Geral</span>
+        <span class="kpi-val">${m.totalWins}V ${m.totalDraws}E ${m.totalLosses}D</span>
+        <span class="kpi-sub">Aproveitamento: ${winPct}% (${totalGames}J)</span>
+      </div>
+      <div class="kpi-box">
+        <span class="kpi-label">Troféus & Prêmios</span>
+        <span class="kpi-val warn">${(G.trophies||[]).length}</span>
+        <span class="kpi-sub">Conquistas: ${unlockedCount}/${TROPHY_CATALOG.length}</span>
+      </div>
+      <div class="kpi-box">
+        <span class="kpi-label">Confiança da Diretoria</span>
+        <span class="kpi-val ${m.boardConfidence>=50?'success':'warn'}">${m.boardConfidence}%</span>
+        <span class="kpi-sub">Metas cumpridas: ${m.objectivesMet}</span>
       </div>
     </div>
-  </div>
+  </div>`;
 
-  <div class="card">
-    <h3>🎯 Meta Atual da Diretoria</h3>
-    ${m.objective ? `<p class="mb-2"><strong>${m.objective.desc}</strong></p><p class="small muted">Recompensa: <strong class="success">${fmtMoney(m.objective.reward)}</strong> ao final da temporada.</p>` : '<p class="muted">Sem meta ativa.</p>'}
-  </div>
+  if(managerTab === "badges"){
+    return subnav + headerCard + `
+    <div class="card active-pane">
+      <h3>
+        <span>🎖️ Coleção de Conquistas & Medalhas (${unlockedCount}/${TROPHY_CATALOG.length})</span>
+        <span class="small muted font-normal">Desbloqueie todas para atingir o status de Lenda</span>
+      </h3>
+      <div class="trophy-grid">
+        ${TROPHY_CATALOG.map(tc => {
+          const count = badges[tc.id] || 0;
+          const unlocked = count > 0;
+          return `<div class="trophy-card ${unlocked ? '' : 'locked'}">
+            <div class="trophy-icon">${tc.icon}</div>
+            <div style="flex:1">
+              <div class="font-bold small" style="color:${unlocked ? 'var(--gold)' : 'var(--text)'}">
+                ${tc.title} ${count > 1 ? `<span class="badge a">${count}x</span>` : ''}
+              </div>
+              <div class="small muted" style="font-size:0.74rem">${tc.desc}</div>
+              <div class="small mono mt" style="font-size:0.72rem;color:${unlocked ? 'var(--accent)' : 'var(--dim)'}">
+                ${unlocked ? `✅ Desbloqueada (+${tc.pts} pts)` : `🔒 Bloqueada (+${tc.pts} pts)`}
+              </div>
+            </div>
+          </div>`;
+        }).join("")}
+      </div>
+    </div>`;
+  }
 
-  <div class="card">
-    <h3>🏆 Sala de Troféus</h3>
-    ${G.trophies.length ? `<ul style="padding-left:20px; line-height:1.9">${G.trophies.map(t=>`<li class="font-bold" style="color:var(--serie-a)">${t}</li>`).join("")}</ul>` : '<p class="muted">Nenhum troféu conquistado. Leve o clube da Série D à Série A!</p>'}
+  if(managerTab === "profile"){
+    return subnav + headerCard + `
+    <div class="card">
+      <h3>🎯 Meta Atual da Diretoria</h3>
+      ${m.objective ? `<p class="mb-2"><strong>${m.objective.desc}</strong></p><p class="small muted">Recompensa: <strong class="success">${fmtMoney(m.objective.reward)}</strong> ao final da temporada.</p>` : '<p class="muted">Sem meta ativa.</p>'}
+    </div>
+    ${renderHistoryCard()}`;
+  }
+
+  // managerTab === 'trophies'
+  const details = G.trophyDetails || [];
+  return subnav + headerCard + `
+  <div class="card active-pane">
+    <h3>
+      <span>🏆 Sala de Troféus & Galeria de Títulos (${(G.trophies||[]).length})</span>
+      <button class="btn sm" onclick="managerTab='badges';render()">🎖️ Ver Medalhas (${unlockedCount}/${TROPHY_CATALOG.length})</button>
+    </h3>
+    ${details.length ? `
+      <div class="trophy-grid mb">
+        ${[...details].reverse().map(d => {
+          const cat = TROPHY_CATALOG.find(x => x.id === d.badgeId) || { icon: "🏆" };
+          return `<div class="trophy-card">
+            <div class="trophy-icon">${cat.icon}</div>
+            <div>
+              <div class="font-bold small" style="color:var(--gold)">${d.title}</div>
+              <div class="small muted" style="font-size:0.75rem">${d.club} · Temporada ${d.season}</div>
+              ${d.prize > 0 ? `<div class="small mono success" style="font-size:0.73rem">Prêmio: +${fmtMoney(d.prize)}</div>` : ''}
+            </div>
+          </div>`;
+        }).join("")}
+      </div>
+    ` : ''}
+    ${G.trophies.length ? `<ul style="padding-left:20px; line-height:1.9">${G.trophies.map(t=>`<li class="font-bold" style="color:var(--serie-a)">${t}</li>`).join("")}</ul>` : '<p class="muted">Nenhum troféu conquistado ainda. Dispute o Brasileirão, a Copa do Brasil, a Supercopa e a Copa Continental para preencher sua galeria!</p>'}
   </div>
   ${renderHistoryCard()}`;
 }
@@ -2669,15 +4107,17 @@ function renderFreeAgents(){
 function renderHistoryCard(){
   const h = G.history || [];
   if(!h.length) return "";
-  return `<div class="card"><h3>📜 Histórico de Temporadas</h3>
+  return `<div class="card"><h3>📜 Histórico de Temporadas & Campeões</h3>
     <div class="table-wrap"><table>
-      <tr><th>Temp</th><th>Divisão</th><th>Pos</th><th>Copa</th><th>Artilheiro</th></tr>
+      <tr><th>Temp</th><th>Divisão</th><th>Pos</th><th>Copa do Brasil</th><th>Continental</th><th>Artilheiro</th><th>Prêmios</th></tr>
       ${[...h].reverse().map(x => `<tr>
         <td class="mono">${x.season}</td>
         <td>${DIVISIONS[x.div]}${x.promoted ? ' ⬆️' : x.relegated ? ' ⬇️' : ''}</td>
         <td class="mono font-bold">${x.pos}º</td>
-        <td class="small">${x.cup}</td>
+        <td class="small">${x.cup}${x.champCup ? ` <span class="muted">(${x.champCup})</span>` : ''}</td>
+        <td class="small">${x.cont || '—'}${x.champCont && x.champCont !== '—' ? ` <span class="muted">(${x.champCont})</span>` : ''}</td>
         <td class="small">${x.top || '—'}</td>
+        <td class="mono small success">${x.prizeWon ? fmtMoney(x.prizeWon) : '—'}</td>
       </tr>`).join("")}
     </table></div></div>`;
 }
@@ -2711,7 +4151,7 @@ function renderTitle(){
   <div class="title-screen">
     <div class="logo">🇧🇷⚽</div>
     <h1>ASTRUM FOOTBALL MANAGER</h1>
-    <p class="sub">Edição Brasil v${APP_VERSION} · Séries A–D · Copa do Brasil · Evolução de elenco · PWA</p>
+    <p class="sub">Edição Brasil v${APP_VERSION} · Séries A–D · Copa & Continental · Arena & Simulador de Renda · Galeria de Troféus</p>
     <ul class="menu-list">
       ${items.map((it, idx) => `
         <li class="${idx===titleIndex?'sel':''}" role="button" tabindex="0" onclick="titleIndex=${idx};runTitleAction(${idx})">
@@ -2726,7 +4166,13 @@ function renderTitle(){
 function showAboutModal(){
   openModal(`Astrum FM — Brasil v${APP_VERSION}`,
     "Comande um clube da Série D ao título da Série A!\n\n" +
-    "🆕 NOVIDADES v3.0:\n" +
+    "🆕 NOVIDADES v4.0:\n" +
+    "• 🏟️ Gestão de Estádio 2.0: diagrama visual, batismo da arena, Naming Rights, Camarotes VIP, LED e Base\n" +
+    "• 🧮 Estimativa de Renda: simulador de preço de ingressos, público, sócio-torcedor e projeção anual\n" +
+    "• 🌎 Central de Competições: Séries A–D, Copa do Brasil, Supercopa do Brasil e Copa Continental (Libertadores)\n" +
+    "• 💰 Tabela Completa de Premiações por posição na liga, fases de copa e prêmios individuais (Chuteira/Garçom)\n" +
+    "• 🏆 Nova Sala de Troféus visual e Galeria com 12 Conquistas desbloqueáveis\n\n" +
+    "🆕 RECURSOS v3.0:\n" +
     "• 🔁 Pirâmide completa: G-4 sobe e Z-4 desce em todas as divisões\n" +
     "• 📅 Tabelas reais (turno e returno) nas 4 séries\n" +
     "• 📈 Evolução de elenco: jovens crescem, veteranos declinam e se aposentam; revelações da base\n" +
@@ -2788,10 +4234,10 @@ function openSavesModal(){
 function confirmDeleteSlot(i){
   const s = slotInfo(i);
   if(!s) return;
-  if(confirm(`Excluir o Slot ${i+1} (${s.team})? Isso não pode ser desfeito.`)){
+  openConfirmModal("🗑 Excluir Save", `Excluir o <strong>Slot ${i+1} (${s.team})</strong>? Essa ação não pode ser desfeita.`, () => {
     deleteSlot(i);
     openSavesModal();
-  }
+  });
 }
 function downloadText(filename, text){
   const blob = new Blob([text], { type: "application/json" });
@@ -2871,6 +4317,13 @@ function renderNewGame(){
     </div>
   </div>`;
 }
+function executeStartNew(name, difficulty, kit1, kit2, slot){
+  newGame({ name, difficulty, kit1, kit2, slot });
+  currentView = "home";
+  lastMatch = null;
+  transferList = [];
+  render();
+}
 function startNew(){
   const inp = document.getElementById("teamName");
   const name = sanitizeClubName(inp ? inp.value : "Juventus-SP");
@@ -2878,17 +4331,18 @@ function startNew(){
   const difficulty = diffEl ? diffEl.value : "normal";
   const slotEl = document.getElementById("slotSel");
   const slot = slotEl ? parseInt(slotEl.value, 10) || 0 : 0;
-  const existing = slotInfo(slot);
-  if(existing && !confirm(`O Slot ${slot+1} já tem uma carreira (${existing.team}, Temp ${existing.season}). Sobrescrever?`)) return;
   const kit1El = document.getElementById("kit1");
   const kit2El = document.getElementById("kit2");
   const kit1 = kit1El ? kit1El.value : "#00e676";
   const kit2 = kit2El ? kit2El.value : "#ffca28";
-  newGame({ name, difficulty, kit1, kit2, slot });
-  currentView = "home";
-  lastMatch = null;
-  transferList = [];
-  render();
+  const existing = slotInfo(slot);
+  if(existing){
+    openConfirmModal("💾 Sobrescrever Slot", `O <strong>Slot ${slot+1}</strong> já possui uma carreira salva (<strong>${existing.team}</strong>, Temp ${existing.season}). Deseja sobrescrever?`, () => {
+      executeStartNew(name, difficulty, kit1, kit2, slot);
+    });
+    return;
+  }
+  executeStartNew(name, difficulty, kit1, kit2, slot);
 }
 // --------------- BOTTOM BAR ---------------
 function renderBottomBar(){
