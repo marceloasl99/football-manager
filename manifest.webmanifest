@@ -1,0 +1,19 @@
+{
+  "name": "Astrum Football Manager — Edição Brasil",
+  "short_name": "Astrum FM",
+  "description": "Manager de futebol brasileiro: Séries A–D, Copa do Brasil e evolução de elenco.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#060b0e",
+  "theme_color": "#00e676",
+  "lang": "pt-BR",
+  "categories": ["games", "sports"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
