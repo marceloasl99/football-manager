@@ -711,13 +711,30 @@ const SCOUT_REGIONS = {
       {n:"Franck Kessié",c:"Costa do Marfim",pos:"MF"},{n:"Marcelo Brozovic",c:"Croácia",pos:"MF"},
       {n:"Seko Fofana",c:"Costa do Marfim",pos:"MF"},{n:"Edouard Mendy",c:"Senegal",pos:"GK"}
     ]
+  },
+  galacticos: {
+    name: "Lendas Globais & Astros Históricos (Mundial)",
+    cost: 290000,
+    delay: 3,
+    desc: "Superestrelas de impacto mundial indiscutível, líderes técnicos lendários.",
+    countries: ["Argentina","Portugal","França","Polônia","Bélgica","Alemanha","Croácia","Uruguai"],
+    names: [
+      {n:"Lionel Messi",c:"Argentina",pos:"FW"},{n:"Cristiano Ronaldo",c:"Portugal",pos:"FW"},
+      {n:"Neymar Jr",c:"Brasil",pos:"FW"},{n:"Karim Benzema",c:"França",pos:"FW"},
+      {n:"Luka Modric",c:"Croácia",pos:"MF"},{n:"Kevin De Bruyne",c:"Bélgica",pos:"MF"},
+      {n:"Robert Lewandowski",c:"Polônia",pos:"FW"},{n:"Luis Suárez",c:"Uruguai",pos:"FW"},
+      {n:"Ángel Di María",c:"Argentina",pos:"FW"},{n:"Toni Kroos",c:"Alemanha",pos:"MF"},
+      {n:"Thomas Müller",c:"Alemanha",pos:"FW"},{n:"Manuel Neuer",c:"Alemanha",pos:"GK"},
+      {n:"Mohamed Salah",c:"Egito",pos:"FW"},{n:"Heung-min Son",c:"Coreia do Sul",pos:"FW"}
+    ]
   }
 };
 
 const SCOUT_TIERS = {
   baixo:  { label: "Jóia Oculta / Apostas (Custo Reduzido)", mult: 0.85, potBonus: 30, costMult: 0.65 },
   medio:  { label: "Titular Consolidado (Nível Divisão)",   mult: 1.05, potBonus: 20, costMult: 1.00 },
-  alto:   { label: "Craque / Estrela de Elite (Top Classe)", mult: 1.25, potBonus: 45, costMult: 1.70 }
+  alto:   { label: "Craque / Estrela de Elite (Top Classe)", mult: 1.25, potBonus: 45, costMult: 1.70 },
+  lenda:  { label: "Lenda Mundial Incontestável (Superestrela)", mult: 1.45, potBonus: 70, costMult: 2.50 }
 };
 
 const STADIUM_UPGRADES = [
@@ -1929,6 +1946,7 @@ function playWeek(){
             if(!G.freeAgents.some(x => x.name === cand.name)){
               cand.fromScout = true;
               cand.scoutLabel = `${reg.name} [${tier.label}]`;
+              cand.scoutWindowsRemaining = 2; // Fica disponível por 2 janelas de transferência completas!
               G.freeAgents.unshift(cand);
             }
           });
@@ -1947,7 +1965,18 @@ function playWeek(){
 
   G.week++;
   G.transferWeek = (G.week % 3 === 0);
-  if(G.transferWeek){ G.transfersDoneThisWindow = 0; addFreeAgents(2); }
+  if(G.transferWeek){
+    G.transfersDoneThisWindow = 0;
+    addFreeAgents(2);
+    // Janela de transferências aberta: reduz a contagem de janelas restantes das opções do olheiro
+    (G.freeAgents || []).forEach(p => {
+      if(p.fromScout && p.scoutWindowsRemaining != null){
+        p.scoutWindowsRemaining--;
+      }
+    });
+    // Remove apenas quem expirou as 2 janelas completas
+    G.freeAgents = (G.freeAgents || []).filter(p => !p.fromScout || p.scoutWindowsRemaining == null || p.scoutWindowsRemaining >= 0);
+  }
   G.results = results;
   return playerResult;
 }
@@ -2474,7 +2503,8 @@ function addFreeAgents(n){
   }
 }
 function refreshFreeAgents(){
-  G.freeAgents = (G.freeAgents || []).filter(p => p.fromRelease);
+  // Preserva jogadores dispensados E jogadores encontrados por olheiro que ainda possuem validade
+  G.freeAgents = (G.freeAgents || []).filter(p => p.fromRelease || (p.fromScout && (p.scoutWindowsRemaining == null || p.scoutWindowsRemaining > 0)));
   const need = Math.max(0, 14 - G.freeAgents.length);
   addFreeAgents(need);
 }
@@ -4323,7 +4353,7 @@ function renderFreeAgents(){
           <td class="rating ${ratingClass(p.rating)}">${p.rating}</td>
           <td class="mono">${fmtMoney(p.wage)}</td>
           <td class="mono warn">${fmtMoney(signingBonus(p))}</td>
-          <td class="small muted">${p.fromScout ? `<span class="badge" style="font-size:0.65rem">✈️ ${p.scoutLabel||'Olheiro'}</span>` : (p.fromRelease ? 'Dispensado' : 'Mercado')}</td>
+          <td class="small muted">${p.fromScout ? `<span class="badge" style="font-size:0.65rem">✈️ ${p.scoutLabel||'Olheiro'} (${p.scoutWindowsRemaining != null ? p.scoutWindowsRemaining+' janelas' : 'disponível'})</span>` : (p.fromRelease ? 'Dispensado' : 'Mercado')}</td>
           <td><button class="btn sm primary" onclick="event.stopPropagation();doSign('${p.id}')">Assinar</button></td>
         </tr>`).join("")}
     </table></div>` : '<p class="muted">Nenhum agente livre nessa posição agora.</p>'}
@@ -4389,9 +4419,9 @@ function renderScoutingSection(){
     ` : ''}
 
     <h4 class="small muted mb-1" style="text-transform:uppercase">Planejar Nova Expedição</h4>
-    <div class="grid-3 mb">
+    <div class="grid-2 mb" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:12px">
       ${Object.entries(SCOUT_REGIONS).map(([rKey, reg]) => `
-        <div class="card" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between">
+        <div class="card" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between; background:var(--panel-alt)">
           <div>
             <h4 style="color:var(--accent)">${reg.name}</h4>
             <p class="small muted mb-2">${reg.desc}</p>
@@ -4399,12 +4429,12 @@ function renderScoutingSection(){
             <p class="small mb-2">Países: <span class="muted">${reg.countries.join(", ")}</span></p>
           </div>
           <div style="border-top:1px dashed var(--border); padding-top:10px">
-            <label class="small muted">Escolha o Perfil do Atleta:</label>
+            <label class="small muted">Escolha a Faixa de Nível:</label>
             ${Object.entries(SCOUT_TIERS).map(([tKey, tier]) => {
               const c = Math.round(reg.cost * tier.costMult);
               return `<div class="flex-row mb-1" style="justify-content:space-between; align-items:center">
-                <span class="small">${tier.label.split("(")[0]}</span>
-                <button class="btn sm ${pt.money>=c?'primary':''}" onclick="startScoutMission('${rKey}','${tKey}')">${fmtMoney(c)}</button>
+                <span class="small font-bold" style="${tKey==='lenda'?'color:var(--gold)':''}">${tier.label.split("(")[0]}</span>
+                <button class="btn sm ${tKey==='lenda'?'gold':pt.money>=c?'primary':''}" onclick="startScoutMission('${rKey}','${tKey}')">${fmtMoney(c)}</button>
               </div>`;
             }).join("")}
           </div>
