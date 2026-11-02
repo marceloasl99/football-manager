@@ -660,6 +660,66 @@ const KIT_COLORS = [
 ];
 
 
+const SCOUT_REGIONS = {
+  sulamerica: {
+    name: "América do Sul (Argentina, Uruguai, Colômbia...)",
+    cost: 45000,
+    delay: 2,
+    desc: "Maturidade física, garra e habilidade técnica com custo moderado.",
+    countries: ["Argentina","Uruguai","Colômbia","Paraguai","Chile","Equador"],
+    names: [
+      {n:"Facundo Pellistri",c:"Uruguai",pos:"FW"},{n:"Matías Arezo",c:"Uruguai",pos:"FW"},
+      {n:"Cristian Medina",c:"Argentina",pos:"MF"},{n:"Equi Fernández",c:"Argentina",pos:"MF"},
+      {n:"Valentín Barco",c:"Argentina",pos:"DF"},{n:"Sebastián Boselli",c:"Uruguai",pos:"DF"},
+      {n:"Yáser Asprilla",c:"Colômbia",pos:"MF"},{n:"Oscar Zambrano",c:"Equador",pos:"MF"},
+      {n:"Kendry Páez",c:"Equador",pos:"MF"},{n:"Julio Enciso",c:"Paraguai",pos:"FW"},
+      {n:"Luciano Rodríguez",c:"Uruguai",pos:"FW"},{n:"Lucas Beltrán",c:"Argentina",pos:"FW"},
+      {n:"Santiago Castro",c:"Argentina",pos:"FW"},{n:"Kevin Mantilla",c:"Colômbia",pos:"DF"},
+      {n:"Diego Gómez",c:"Paraguai",pos:"MF"},{n:"Vicente Pizarro",c:"Chile",pos:"MF"}
+    ]
+  },
+  europa: {
+    name: "Europa (Premier League, La Liga, Serie A...)",
+    cost: 135000,
+    delay: 3,
+    desc: "Reforços consagrados e jovens promissores europeus com alto refino tático.",
+    countries: ["Espanha","França","Inglaterra","Itália","Portugal","Alemanha","Holanda"],
+    names: [
+      {n:"Álvaro Morata",c:"Espanha",pos:"FW"},{n:"Adrien Rabiot",c:"França",pos:"MF"},
+      {n:"Anthony Martial",c:"França",pos:"FW"},{n:"James Ward-Prowse",c:"Inglaterra",pos:"MF"},
+      {n:"Nicolò Zaniolo",c:"Itália",pos:"MF"},{n:"Gonçalo Guedes",c:"Portugal",pos:"FW"},
+      {n:"Julian Draxler",c:"Alemanha",pos:"MF"},{n:"Donny van de Beek",c:"Holanda",pos:"MF"},
+      {n:"Sergio Ramos",c:"Espanha",pos:"DF"},{n:"Mats Hummels",c:"Alemanha",pos:"DF"},
+      {n:"Dele Alli",c:"Inglaterra",pos:"MF"},{n:"Miralem Pjanic",c:"Bósnia",pos:"MF"},
+      {n:"Jesse Lingard",c:"Inglaterra",pos:"MF"},{n:"Florian Thauvin",c:"França",pos:"FW"},
+      {n:"Keylor Navas",c:"Costa Rica",pos:"GK"},{n:"Mario Balotelli",c:"Itália",pos:"FW"}
+    ]
+  },
+  arabia: {
+    name: "Mundo Árabe & Ásia (Arábia Saudita, Catar, Emirados...)",
+    cost: 95000,
+    delay: 2,
+    desc: "Craques internacionais e atletas renomados com poder de decisão imediato.",
+    countries: ["Arábia Saudita","Catar","Emirados Árabes","Argélia","Marrocos","Senegal"],
+    names: [
+      {n:"Salem Al-Dawsari",c:"Arábia Saudita",pos:"FW"},{n:"Sultan Al-Ghannam",c:"Arábia Saudita",pos:"DF"},
+      {n:"Akram Afif",c:"Catar",pos:"FW"},{n:"Almoez Ali",c:"Catar",pos:"FW"},
+      {n:"Ali Mabkhout",c:"Emirados Árabes",pos:"FW"},{n:"Riyad Mahrez",c:"Argélia",pos:"FW"},
+      {n:"Sadio Mané",c:"Senegal",pos:"FW"},{n:"Kalidou Koulibaly",c:"Senegal",pos:"DF"},
+      {n:"Yassine Bounou",c:"Marrocos",pos:"GK"},{n:"Aleksandar Mitrovic",c:"Sérvia",pos:"FW"},
+      {n:"Otávio",c:"Portugal",pos:"MF"},{n:"Ruben Neves",c:"Portugal",pos:"MF"},
+      {n:"Franck Kessié",c:"Costa do Marfim",pos:"MF"},{n:"Marcelo Brozovic",c:"Croácia",pos:"MF"},
+      {n:"Seko Fofana",c:"Costa do Marfim",pos:"MF"},{n:"Edouard Mendy",c:"Senegal",pos:"GK"}
+    ]
+  }
+};
+
+const SCOUT_TIERS = {
+  baixo:  { label: "Jóia Oculta / Apostas (Custo Reduzido)", mult: 0.85, potBonus: 30, costMult: 0.65 },
+  medio:  { label: "Titular Consolidado (Nível Divisão)",   mult: 1.05, potBonus: 20, costMult: 1.00 },
+  alto:   { label: "Craque / Estrela de Elite (Top Classe)", mult: 1.25, potBonus: 45, costMult: 1.70 }
+};
+
 const STADIUM_UPGRADES = [
   { key: "seats", label: "+500 lugares", cost: 25000, desc: "Amplia arquibancada em +500 lugares" },
   { key: "seatsFast", label: "+1.000 lugares (Rápido)", cost: 75000, desc: "Expansão acelerada (+1.000 lugares)" },
@@ -670,7 +730,9 @@ const STADIUM_UPGRADES = [
   { key: "lighting", label: "Iluminação LED & Telão (+10%)", cost: 18000, desc: "Atrai mais público e valoriza o espetáculo" },
   { key: "medical", label: "DM / Fisioterapia (+10%)", cost: 12000, desc: "Reduz risco de lesões no elenco" },
   { key: "press", label: "Marketing & Sócios (+10%)", cost: 10000, desc: "Expande quadro de sócios e patrocínio" },
-  { key: "academy", label: "Centro de Base & Olheiros (+10%)", cost: 22000, desc: "Revela jovens mais talentosos no fim do ano" }
+  { key: "academy", label: "Centro de Base & Olheiros (+10%)", cost: 22000, desc: "Revela jovens mais talentosos no fim do ano" },
+  { key: "multiArena", label: "Arena Multiuso (+10%)", cost: 50000, desc: "Receitas fixas de eventos, shows e aluguel corporativo" },
+  { key: "fanShow", label: "Show & Pyro Matchday (+10%)", cost: 35000, desc: "Mega espetáculo pré-jogo: + moral, público e pressão da torcida" }
 ];
 
 const STADIUM_NAMES_MAP = {
@@ -811,7 +873,14 @@ function squadStrength(players){
   if(!players.length) return 50;
   const sorted = [...players].sort((a,b)=>b.rating-a.rating);
   const top11 = sorted.slice(0,11);
-  const avg = top11.reduce((s,p)=>s+p.rating*(p.energy/100)*(p.form/50),0)/top11.length;
+  // Curva amortecida com piso mínimo: evita que jogadores com cansaço temporário caiam a 0 de rendimento
+  const avg = top11.reduce((s,p)=>{
+    const e = clamp(p.energy != null ? p.energy : 100, 15, 100);
+    const f = clamp(p.form != null ? p.form : 50, 20, 99);
+    const energyMult = 0.65 + 0.35 * (e / 100);       // varia suavemente entre 0.70x e 1.00x
+    const formMult   = 0.80 + 0.20 * (f / 50);        // varia suavemente entre 0.88x e 1.20x
+    return s + p.rating * energyMult * formMult;
+  }, 0) / top11.length;
   return Math.round(avg);
 }
 
@@ -917,6 +986,7 @@ function createAITeams(divisions){
         pitch: [40,55,70,85][d], facilities: [20,35,50,75][d],
         vipBoxes: [15,30,50,75][d], lighting: [20,40,60,85][d],
         medical: [20,30,45,65][d], press: [15,25,40,60][d], academy: [15,30,45,70][d],
+        multiArena: [0, 10, 25, 50][d], fanShow: [0, 10, 30, 60][d],
         namingRights: "none",
         recordAttendance: 0, recordGate: 0, attendanceHistory: [],
         points: 0, gf:0, ga:0, won:0, drawn:0, lost:0,
@@ -940,6 +1010,7 @@ function newGame(opts){
     ticketPrice: 20,
     pitch: 35, facilities: 15, vipBoxes: 10, lighting: 15,
     medical: 15, press: 10, academy: 15,
+    multiArena: 0, fanShow: 0,
     namingRights: "none",
     recordAttendance: 0, recordGate: 0, attendanceHistory: [],
     points: 0, gf:0, ga:0, won:0, drawn:0, lost:0,
@@ -959,6 +1030,9 @@ function newGame(opts){
     seasonFinances: { gate: 0, vip: 0, matchday: 0, socio: 0, prizes: 0, wages: 0, upkeep: 0, transfersIn: 0, transfersOut: 0 },
     cup: null, supercup: null, continental: null, qualifiedContinental: [],
     freeAgents: [], pendingOffers: null,
+    scoutingMissions: [],
+    matchBribery: null,
+    autoPlayTacticsMode: "smart", // "smart" (rotaciona pelo vigor/forma e escolhe melhor esquema) ou "fixed"
     manager: {
       name: "Treinador",
       totalWins: 0, totalDraws: 0, totalLosses: 0,
@@ -1418,12 +1492,13 @@ function estimateMatchRevenue(team, opts = {}){
   const matchdayIncome = Math.round(attendance * spendPerFan);
   const homeMatchTotal = gateIncome + vipIncome + matchdayIncome;
 
-  // Receita fixa por rodada (Sócio-torcedor + Patrocínio + Naming Rights)
+  // Receita fixa por rodada (Sócio-torcedor + Patrocínio + Naming Rights + Arena Multiuso)
   const socios = calcSociosCount(team);
   const socioFeePerWeek = [2.2, 3.0, 4.2, 6.0][div] || 2.2;
   const namingDeal = NAMING_RIGHTS_DEALS.find(d => d.id === (team.namingRights || "none")) || NAMING_RIGHTS_DEALS[0];
   const sponsorBase = [3500, 9000, 24000, 68000][div] * (0.85 + (team.press || 10) / 200);
-  const socioIncome = Math.round(socios * socioFeePerWeek + sponsorBase + namingDeal.bonusPerWeek);
+  const multiArenaIncome = Math.round((team.multiArena || 0) * (cap * 0.12 + 180));
+  const socioIncome = Math.round(socios * socioFeePerWeek + sponsorBase + namingDeal.bonusPerWeek + multiArenaIncome);
 
   // Custos por rodada
   const wages = (team.squad || []).reduce((s,p) => s + (p.wage || 0), 0);
@@ -1433,8 +1508,9 @@ function estimateMatchRevenue(team, opts = {}){
   );
   const totalCosts = wages + upkeep;
 
-  // Bônus de caldeirão se ocupação >= 80%
-  const crowdBonusPct = (occPct >= 80 && cap >= 8000) ? Math.min(6, Math.round((occPct - 75) / 4)) : 0;
+  // Bônus de caldeirão se ocupação >= 80% (amplificado por Shows & Pyro Matchday)
+  const fanShowBonus = Math.round((team.fanShow || 0) * 0.08); // até +8% bônus de pressão
+  const crowdBonusPct = (occPct >= 80 && cap >= 8000) ? Math.min(14, Math.round((occPct - 75) / 4) + fanShowBonus) : fanShowBonus;
 
   return {
     capacity: cap,
@@ -1617,6 +1693,19 @@ function expectedGoals(homeName, awayName){
     const est = estimateMatchRevenue(hTeam, { randomize: false });
     if(est.crowdBonusPct > 0) hStr *= (1 + est.crowdBonusPct / 100);
   }
+
+  // Intervenção dos Bastidores: Mala Branca / Suborno para o adversário perder
+  if(G && G.matchBribery && !G.matchBribery.executed){
+    const oppName = homeName === G.teamName ? awayName : (awayName === G.teamName ? homeName : null);
+    if(oppName && G.matchBribery.targetTeam === oppName){
+      if(G.matchBribery.delivered){
+        // Adversário perde entre 30% e 45% de rendimento em campo!
+        if(homeName === oppName) hStr *= 0.62;
+        else aStr *= 0.62;
+      }
+    }
+  }
+
   hStr *= 1.08;
   hStr *= (0.85 + Math.random()*0.3);
   aStr *= (0.85 + Math.random()*0.3);
@@ -1633,19 +1722,24 @@ function playerAftermath(cupMatch=false, result="E"){
   const pt = G.teams[G.teamName];
   const events = [];
   const sel = pt.squad.filter(p => G.selected.includes(p.id));
-  const formRange = result === "V" ? [-2,8] : result === "D" ? [-8,2] : [-4,4];
+  const formRange = result === "V" ? [-1,8] : result === "D" ? [-5,2] : [-3,4];
+
+  // Bônus de shows pré-jogo na moral do elenco
+  const fanShowMorale = (pt.fanShow || 0) >= 40 ? 1 : 0;
+
   sel.forEach(p => {
-    p.energy = clamp(p.energy - rnd(8,17), 20, 100);
-    p.form = clamp(p.form + rnd(formRange[0], formRange[1]), 20, 99);
+    // Redução do desgaste de energia: 6 a 12 (em vez de 8 a 17) para evitar estafa crônica
+    p.energy = clamp(p.energy - rnd(6,12), 20, 100);
+    p.form = clamp(p.form + rnd(formRange[0], formRange[1]) + fanShowMorale, 25, 99);
     if(!cupMatch) p.apps = (p.apps || 0) + 1;
   });
-  if(Math.random() < 0.11 - pt.medical/1000 && sel.length){
+  if(Math.random() < 0.08 - (pt.medical||15)/1300 && sel.length){
     const p = pick(sel);
-    p.injured = rnd(1,3);
+    p.injured = rnd(1,2);
     G.selected = G.selected.filter(id => id !== p.id);
     events.push({ type:"card", text:`🚑 ${p.name} sentiu lesão (${p.injured} sem. no DM)` });
   }
-  if(Math.random() < 0.04 && sel.length){
+  if(Math.random() < 0.035 && sel.length){
     const p = pick(sel.filter(x => G.selected.includes(x.id)));
     if(p){
       p.suspended = 1;
@@ -1653,6 +1747,22 @@ function playerAftermath(cupMatch=false, result="E"){
       events.push({ type:"card", text:`🟥 ${p.name} foi expulso! (1 jogo suspenso)` });
     }
   }
+
+  // Notificação e desfecho da Mala Branca
+  if(G && G.matchBribery && !G.matchBribery.executed){
+    G.matchBribery.executed = true;
+    if(G.matchBribery.delivered){
+      events.push({ type:"card", text:`🤫 Operação Mala Branca: O adversário amoleceu em campo!` });
+    } else {
+      events.push({ type:"card", text:`⚠️ Mala Branca: O intermediário sumiu com o dinheiro ou o adversário recusou!` });
+    }
+    if(G.matchBribery.investigated){
+      G.manager.boardConfidence = Math.max(5, G.manager.boardConfidence - 18);
+      events.push({ type:"card", text:`🚨 VAZOU NA IMPRENSA! O STJD abriu inquérito sobre tentativa de manipulação (-18% de confiança)!` });
+    }
+    G.matchBribery = null;
+  }
+
   return events;
 }
 
@@ -1745,13 +1855,14 @@ function playWeek(){
     }
   }
 
-  // Recuperação de energia (reservas descansam mais)
+  // Recuperação de energia (reservas descansam mais e DM acelera a regeneração)
   Object.values(G.teams).forEach(t => {
     const mine = t.name === G.teamName;
+    const medBonus = Math.round((t.medical || 15) * 0.08); // até +8 de recuperação por rodada
     t.squad.forEach(p => {
       if(p.energy < 100){
-        const bonus = (mine && !G.selected.includes(p.id)) ? 6 : 0;
-        p.energy = clamp(p.energy + rnd(6,13) + bonus, 0, 100);
+        const reserveBonus = (mine && !G.selected.includes(p.id)) ? 9 : 0;
+        p.energy = clamp(p.energy + rnd(9,15) + medBonus + reserveBonus, 0, 100);
       }
     });
   });
@@ -1791,6 +1902,42 @@ function playWeek(){
 
   pt.money += weekIncome - fin.totalCosts;
 
+  // Processamento de Missões do Olheiro Internacional
+  if(G && Array.isArray(G.scoutingMissions)){
+    G.scoutingMissions.forEach(m => {
+      if(!m.completed){
+        m.gamesRemaining--;
+        if(m.gamesRemaining <= 0){
+          m.completed = true;
+          const reg = SCOUT_REGIONS[m.regionKey];
+          const tier = SCOUT_TIERS[m.tierKey];
+          const divBase = TIER_BASE[pt.division] || 60;
+          const targetRating = Math.round(divBase * tier.mult);
+          const pool = reg ? [...reg.names] : [];
+          shuffle(pool);
+          const candidates = pool.slice(0, 3).map(c => {
+            const r = clamp(targetRating + rnd(-15, 25), 35, 540);
+            return buildPlayer({
+              name: c.n, pos: c.pos, rating: r,
+              age: m.tierKey === "baixo" ? rnd(17, 21) : rnd(22, 31),
+              country: c.c, foreign: true,
+              pot: r + rnd(15, 55) + tier.potBonus
+            });
+          });
+          m.candidates = candidates;
+          candidates.forEach(cand => {
+            if(!G.freeAgents.some(x => x.name === cand.name)){
+              cand.fromScout = true;
+              cand.scoutLabel = `${reg.name} [${tier.label}]`;
+              G.freeAgents.unshift(cand);
+            }
+          });
+          showMsg(`✈️ O olheiro retornou de sua viagem à ${reg.name}! 3 opções foram adicionadas à aba Agentes Livres.`, "info");
+        }
+      }
+    });
+  }
+
   if(autoPlayActive && autoPlayUpgradeStadium && pt.money > 160000){
     if(pt.stadium < 50000){ pt.money -= 25000; pt.stadium += 500; }
     else if(pt.medical < 90){ pt.money -= 12000; pt.medical = Math.min(100, pt.medical + 10); }
@@ -1828,13 +1975,13 @@ function developPlayer(p){
   const pot = p.pot || (p.rating + 20);
   let d;
   if(a <= 20) d = rnd(4,16);
-  else if(a <= 23) d = rnd(0,12);
-  else if(a <= 27) d = rnd(-4,7);
-  else if(a <= 30) d = rnd(-8,3);
-  else if(a <= 33) d = rnd(-12,0);
-  else d = rnd(-18,-4);
+  else if(a <= 23) d = rnd(1,12);
+  else if(a <= 27) d = rnd(-2,8);
+  else if(a <= 30) d = rnd(-5,4);
+  else if(a <= 33) d = rnd(-9,1);
+  else d = rnd(-14,-2);
   if(d > 0){
-    if(p.rating >= pot) d = Math.round(d * 0.25);
+    if(p.rating >= pot) d = Math.round(d * 0.35);
     else d = Math.min(d, pot - p.rating + 6);
   }
   const before = p.rating;
@@ -2094,15 +2241,58 @@ function getAvailableSquad(){
   return pt.squad.filter(p => p.injured<=0 && p.suspended<=0).sort((a,b) => (po[a.pos]-po[b.pos]) || (b.rating-a.rating));
 }
 
-// --------------- AUTO SELECT XI (com formação) ---------------
-function autoSelectXI(){
+// --------------- AUTO SELECT XI & SMART TACTICS ---------------
+function findBestFormationForSquad(squad){
+  const avail = squad.filter(p => p.injured<=0 && p.suspended<=0 && (p.energy != null ? p.energy : 100) >= 45);
+  const pool = avail.length >= 11 ? avail : squad.filter(p => p.injured<=0 && p.suspended<=0);
+  const counts = {GK:0, DF:0, MF:0, FW:0};
+  pool.forEach(p => { if(counts[p.pos] !== undefined) counts[p.pos]++; });
+
+  let bestKey = "4-4-2";
+  let bestScore = -999;
+  for(const [fKey, form] of Object.entries(FORMATIONS)){
+    let penalty = 0;
+    if(counts.GK < form.GK) penalty += 50;
+    if(counts.DF < form.DF) penalty += (form.DF - counts.DF) * 12;
+    if(counts.MF < form.MF) penalty += (form.MF - counts.MF) * 10;
+    if(counts.FW < form.FW) penalty += (form.FW - counts.FW) * 10;
+    const score = (form.att * 100 + (2.0 - form.opp) * 100) - penalty;
+    if(score > bestScore){
+      bestScore = score;
+      bestKey = fKey;
+    }
+  }
+  return bestKey;
+}
+
+function autoSelectXI(options = {}){
   if(!G) return;
   const team = G.teams[G.teamName];
+  if(!team || !Array.isArray(team.squad)) return;
+
+  const isSmart = (options.smart !== undefined) ? options.smart : (G.autoPlayTacticsMode !== "fixed");
+  if(isSmart && (!options.lockFormation)){
+    G.formation = findBestFormationForSquad(team.squad);
+  }
+
   const formation = FORMATIONS[G.formation] || FORMATIONS["4-4-2"];
   const available = team.squad.filter(p => p.injured<=0 && p.suspended<=0);
-  const byPos = {GK:[],DF:[],MF:[],FW:[]};
+  const byPos = {GK:[], DF:[], MF:[], FW:[]};
   available.forEach(p => { if(byPos[p.pos]) byPos[p.pos].push(p); });
-  Object.keys(byPos).forEach(k => byPos[k].sort((a,b) => (b.rating*(b.energy/100)) - (a.rating*(a.energy/100))));
+
+  // Score composto ponderado por rating, energia e forma
+  function calcPlayerScore(p){
+    const e = clamp(p.energy != null ? p.energy : 100, 10, 100);
+    const f = clamp(p.form != null ? p.form : 50, 20, 99);
+    // Prioriza manter jogadores descansados (evita estafa abaixo de 55)
+    const energyWeight = e < 55 ? (e / 100) * 0.70 : (0.75 + 0.25 * (e / 100));
+    const formWeight = 0.85 + 0.15 * (f / 50);
+    return p.rating * energyWeight * formWeight;
+  }
+
+  Object.keys(byPos).forEach(k => {
+    byPos[k].sort((a,b) => calcPlayerScore(b) - calcPlayerScore(a));
+  });
 
   const selected = [];
   let foreignCount = 0;
@@ -2113,6 +2303,7 @@ function autoSelectXI(){
     if(p.foreign) foreignCount++;
     return true;
   }
+
   for(const pos of ["GK","DF","MF","FW"]){
     let count = 0;
     const need = formation[pos] || 0;
@@ -2121,7 +2312,9 @@ function autoSelectXI(){
       if(tryAdd(p)) count++;
     }
   }
-  const rest = available.filter(p => !selected.includes(p.id)).sort((a,b) => b.rating - a.rating);
+
+  // Preenche vagas remanescentes se faltar alguém na posição de origem
+  const rest = available.filter(p => !selected.includes(p.id)).sort((a,b) => calcPlayerScore(b) - calcPlayerScore(a));
   for(const p of rest){
     if(selected.length >= 11) break;
     tryAdd(p);
@@ -2155,6 +2348,10 @@ function setAutoPlaySpeed(ms){ autoPlaySpeed = ms; render(); }
 function runAutoPlayStep(){
   if(!autoPlayActive || !G) return;
   const pt = G.teams[G.teamName];
+
+  // AFK Realista: reescala dinamicamente a cada partida rodando os jogadores mais aptos fisicamente
+  autoSelectXI();
+
   G.selected = G.selected.filter(id => {
     const p = pt.squad.find(x => x.id === id);
     return p && p.injured <= 0 && p.suspended <= 0;
@@ -2334,7 +2531,9 @@ function upgrade(what){
     lighting: {cost: 18000, max: () => (pt.lighting||0) >= 100, effect:()=>{ pt.lighting = Math.min(100, (pt.lighting||15)+10); }, msg:"💡 Iluminação LED e Telão atualizados (+10%)!"},
     medical: {cost: 12000, max: () => pt.medical >= 100, effect:()=>{ pt.medical = Math.min(100, pt.medical+10); }, msg:"🏥 DM e Fisioterapia aprimorados (+10%)!"},
     press: {cost: 10000, max: () => pt.press >= 100, effect:()=>{ pt.press = Math.min(100, pt.press+10); }, msg:"📣 Marketing & Sócios expandidos (+10%)!"},
-    academy: {cost: 22000, max: () => (pt.academy||0) >= 100, effect:()=>{ pt.academy = Math.min(100, (pt.academy||15)+10); }, msg:"🌱 Centro de Base & Olheiros evoluído (+10%)!"}
+    academy: {cost: 22000, max: () => (pt.academy||0) >= 100, effect:()=>{ pt.academy = Math.min(100, (pt.academy||15)+10); }, msg:"🌱 Centro de Base & Olheiros evoluído (+10%)!"},
+    multiArena: {cost: 50000, max: () => (pt.multiArena||0) >= 100, effect:()=>{ pt.multiArena = Math.min(100, (pt.multiArena||0)+10); }, msg:"🎪 Arena Multiuso expandida (+10% em receitas corporativas e shows)!"},
+    fanShow: {cost: 35000, max: () => (pt.fanShow||0) >= 100, effect:()=>{ pt.fanShow = Math.min(100, (pt.fanShow||0)+10); }, msg:"🎆 Espetáculo & Pirotecnia de Matchday aprimorado (+10%)!"}
   };
   const u = costs[what];
   if(!u) return;
@@ -2473,6 +2672,8 @@ function migrateSave(d){
     if(t.vipBoxes == null) t.vipBoxes = [10, 25, 45, 70][div] || 10;
     if(t.lighting == null) t.lighting = [15, 30, 50, 80][div] || 15;
     if(t.academy == null) t.academy = [15, 30, 45, 65][div] || 15;
+    if(t.multiArena == null) t.multiArena = [0, 10, 25, 50][div] || 0;
+    if(t.fanShow == null) t.fanShow = [0, 10, 30, 60][div] || 0;
     if(!t.namingRights) t.namingRights = "none";
     if(t.recordAttendance == null) t.recordAttendance = 0;
     if(t.recordGate == null) t.recordGate = 0;
@@ -2510,6 +2711,9 @@ function ensureConsistency(){
   if(!G.seasonFinances) G.seasonFinances = { gate:0, vip:0, matchday:0, socio:0, prizes:0, wages:0, upkeep:0, transfersIn:0, transfersOut:0 };
   if(!G.trophyDetails) G.trophyDetails = [];
   if(!G.unlockedBadges) G.unlockedBadges = {};
+  if(!Array.isArray(G.scoutingMissions)) G.scoutingMissions = [];
+  if(G.matchBribery === undefined) G.matchBribery = null;
+  if(!G.autoPlayTacticsMode) G.autoPlayTacticsMode = "smart";
   checkSpecialBadges();
   if(G.freeAgents.length < 8) refreshFreeAgents();
   if(G.phase === "season" && G.selected.length < 11) autoSelectXI();
@@ -2845,6 +3049,18 @@ function renderHome(){
       ${isContinentalWeek() ? `<p class="mb-1">🌎 <strong style="color:var(--blue)">Rodada da Copa Continental — ${CONT_ROUND_NAMES[G.continental.round]}</strong></p>` : ""}
       <p class="mb-1">Janela do Mercado: ${G.transferWeek ? '<span class="success font-bold">ABERTA</span>' : `<span class="muted">Abre na rodada ${G.week + (3 - (G.week%3||3))}</span>`}</p>
       <p class="mb-1">Titulares escalados: <strong class="${G.selected.length===11?'success':'error'}">${G.selected.length}/11</strong></p>
+      ${nx && !endOfSeason ? `
+        <div style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--border)">
+          <div class="flex-row small" style="align-items:center; justify-content:space-between">
+            <span class="muted">🤫 Bastidores:</span>
+            ${G.matchBribery && G.matchBribery.targetTeam === nx.opp ? `
+              <span class="warn font-bold">💼 Mala Branca armada vs ${nx.opp}!</span>
+            ` : `
+              <button class="btn sm danger" onclick="openBriberyModal('${nx.opp}')">💵 Mala Branca (Comprar derrota)</button>
+            `}
+          </div>
+        </div>
+      ` : ''}
       <div class="flex-row mt">
         <button class="btn primary" onclick="doPlayWeek()" ${sacked?'disabled':''}>${playLabel()} ${endOfSeason ? "" : "Rodada"}</button>
         <button class="btn ${autoPlayActive?'danger':'gold'}" onclick="startAutoPlay(0)" ${sacked?'disabled':''}>
@@ -2888,6 +3104,10 @@ function renderHome(){
         <label style="display:flex; align-items:center; gap:8px; margin:0; cursor:pointer; color:var(--text)">
           <input type="checkbox" ${autoPlayUpgradeStadium?'checked':''} onchange="autoPlayUpgradeStadium=this.checked">
           Investir no estádio automaticamente
+        </label>
+        <label style="display:flex; align-items:center; gap:8px; margin:0; cursor:pointer; color:var(--accent)">
+          <input type="checkbox" ${(G.autoPlayTacticsMode||'smart')==='smart'?'checked':''} onchange="G.autoPlayTacticsMode=this.checked?'smart':'fixed';saveGame();render()">
+          🧠 Escalação Inteligente (Rodízio físico AFK + Melhor Esquema)
         </label>
       </div>
     </div>
@@ -2989,9 +3209,10 @@ function renderTactics(){
 
     <div class="flex-row mb small">
       <label style="margin:0; flex:0 0 auto"><strong>Formação:</strong></label>
-      <select style="max-width:200px; padding:6px 10px; font-size:0.85rem" onchange="G.formation=this.value;autoSelectXI();render()">
+      <select style="max-width:200px; padding:6px 10px; font-size:0.85rem" onchange="G.formation=this.value;autoSelectXI({lockFormation:true});render()">
         ${Object.entries(FORMATIONS).map(([k,v])=>`<option value="${k}" ${G.formation===k?'selected':''}>${k} — ${v.bonus}</option>`).join("")}
       </select>
+      <button class="btn sm" onclick="autoSelectXI();showMsg('🧠 Esquema e XI otimizados!');render()">🧠 Sugerir Melhor Esquema</button>
     </div>
 
     <div class="flex-row mb small">
@@ -3050,9 +3271,11 @@ function renderTransfers(){
     <button class="btn ${transferSection===0?'primary':''}" onclick="transferSection=0;rowIndex=0;render()">🛒 Contratar</button>
     <button class="btn ${transferSection===1?'primary':''}" onclick="transferSection=1;rowIndex=0;render()">💰 Vender</button>
     <button class="btn ${transferSection===2?'primary':''}" onclick="transferSection=2;rowIndex=0;render()">👤 Livres (${(G.freeAgents||[]).length})</button>
+    <button class="btn ${transferSection===3?'gold':''}" onclick="transferSection=3;rowIndex=0;render()">✈️ Olheiro Internacional (${(G.scoutingMissions||[]).filter(m=>!m.completed).length})</button>
     ${G.transferWeek && transferSection < 2 ? `<span class="small muted">Negócios: <strong>${G.transfersDoneThisWindow||0}/5</strong></span>` : ''}
   </div>`;
 
+  if(transferSection === 3) return tabs + renderScoutingSection();
   if(transferSection === 2) return tabs + renderFreeAgents();
 
   if(!G.transferWeek){
@@ -3816,7 +4039,9 @@ function renderStadium(){
     lighting: `${pt.lighting || 15}%`,
     medical: `${pt.medical}%`,
     press: `${pt.press}%`,
-    academy: `${pt.academy || 15}%`
+    academy: `${pt.academy || 15}%`,
+    multiArena: `${pt.multiArena || 0}%`,
+    fanShow: `${pt.fanShow || 0}%`
   };
 
   return subnav + `
@@ -4089,7 +4314,7 @@ function renderFreeAgents(){
     <h3><span>👤 Agentes Livres (${list.length})</span><span class="small muted font-normal">Caixa: ${fmtMoney(pt.money)} · Elenco ${pt.squad.length}/${SQUAD_MAX}</span></h3>
     <p class="small muted mb">Sem custo de passe: você paga só as luvas (8% do valor) e o salário. Podem ser contratados em qualquer rodada.</p>
     ${list.length ? `<div class="table-wrap"><table>
-      <tr><th>Pos</th><th>Nome</th><th>Id.</th><th>Nota</th><th>Salário</th><th>Luvas</th><th>Ação</th></tr>
+      <tr><th>Pos</th><th>Nome</th><th>Id.</th><th>Nota</th><th>Salário</th><th>Luvas</th><th>Origem</th><th>Ação</th></tr>
       ${list.map((p, idx) => `
         <tr class="${idx===rowIndex?'kb-focus':''}" onclick="rowIndex=${idx};render()">
           <td class="pos">${p.pos}</td>
@@ -4098,10 +4323,160 @@ function renderFreeAgents(){
           <td class="rating ${ratingClass(p.rating)}">${p.rating}</td>
           <td class="mono">${fmtMoney(p.wage)}</td>
           <td class="mono warn">${fmtMoney(signingBonus(p))}</td>
+          <td class="small muted">${p.fromScout ? `<span class="badge" style="font-size:0.65rem">✈️ ${p.scoutLabel||'Olheiro'}</span>` : (p.fromRelease ? 'Dispensado' : 'Mercado')}</td>
           <td><button class="btn sm primary" onclick="event.stopPropagation();doSign('${p.id}')">Assinar</button></td>
         </tr>`).join("")}
     </table></div>` : '<p class="muted">Nenhum agente livre nessa posição agora.</p>'}
   </div>`;
+}
+
+function startScoutMission(regionKey, tierKey){
+  const pt = G.teams[G.teamName];
+  const reg = SCOUT_REGIONS[regionKey];
+  const tier = SCOUT_TIERS[tierKey];
+  if(!reg || !tier) return;
+  const totalCost = Math.round(reg.cost * tier.costMult);
+  if(pt.money < totalCost){
+    showMsg(`Saldo insuficiente! Custo da missão: ${fmtMoney(totalCost)}.`, "error");
+    return;
+  }
+  pt.money -= totalCost;
+  G.scoutingMissions = G.scoutingMissions || [];
+  G.scoutingMissions.unshift({
+    id: uid(),
+    regionKey,
+    tierKey,
+    gamesRemaining: reg.delay,
+    cost: totalCost,
+    completed: false,
+    startedWeek: G.week
+  });
+  saveGame();
+  showMsg(`✈️ Olheiro enviado para ${reg.name}! Ele retornará em ${reg.delay} partidas com 3 opções.`, "info");
+  render();
+}
+
+function renderScoutingSection(){
+  const pt = G.teams[G.teamName];
+  const activeMissions = (G.scoutingMissions || []).filter(m => !m.completed);
+  const doneMissions = (G.scoutingMissions || []).filter(m => m.completed).slice(0, 4);
+
+  return `
+  <div class="card active-pane">
+    <h3>
+      <span>✈️ Rede de Scouting Internacional & Prospecção</span>
+      <span class="small muted font-normal">Caixa: ${fmtMoney(pt.money)}</span>
+    </h3>
+    <p class="small muted mb-2">Contrate e despache olheiros dedicados para as principais regiões do mundo. Eles realizam viagens de imersão de 2 a 3 jogos e trazem 3 opções com análise aprofundada de potencial diretamente para a sua lista de Agentes Livres.</p>
+
+    ${activeMissions.length ? `
+      <div class="card" style="background:#0b1924; border-color:var(--accent); margin-bottom:14px">
+        <h4 style="color:var(--accent); margin-bottom:6px">🛫 Missões em Andamento</h4>
+        ${activeMissions.map(m => {
+          const r = SCOUT_REGIONS[m.regionKey];
+          const t = SCOUT_TIERS[m.tierKey];
+          return `<div class="flex-row mb-1" style="justify-content:space-between; align-items:center; border-bottom:1px dashed var(--border); padding-bottom:6px">
+            <div>
+              <strong>${r.name}</strong> <span class="badge" style="font-size:0.7rem">${t.label}</span>
+              <div class="small muted">Investimento: ${fmtMoney(m.cost)}</div>
+            </div>
+            <div>
+              <span class="stat-pill info font-bold">⏳ Restam ${m.gamesRemaining} jogo(s)</span>
+            </div>
+          </div>`;
+        }).join("")}
+      </div>
+    ` : ''}
+
+    <h4 class="small muted mb-1" style="text-transform:uppercase">Planejar Nova Expedição</h4>
+    <div class="grid-3 mb">
+      ${Object.entries(SCOUT_REGIONS).map(([rKey, reg]) => `
+        <div class="card" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between">
+          <div>
+            <h4 style="color:var(--accent)">${reg.name}</h4>
+            <p class="small muted mb-2">${reg.desc}</p>
+            <p class="small mb-1">Duração da Viagem: <strong>${reg.delay} rodadas</strong></p>
+            <p class="small mb-2">Países: <span class="muted">${reg.countries.join(", ")}</span></p>
+          </div>
+          <div style="border-top:1px dashed var(--border); padding-top:10px">
+            <label class="small muted">Escolha o Perfil do Atleta:</label>
+            ${Object.entries(SCOUT_TIERS).map(([tKey, tier]) => {
+              const c = Math.round(reg.cost * tier.costMult);
+              return `<div class="flex-row mb-1" style="justify-content:space-between; align-items:center">
+                <span class="small">${tier.label.split("(")[0]}</span>
+                <button class="btn sm ${pt.money>=c?'primary':''}" onclick="startScoutMission('${rKey}','${tKey}')">${fmtMoney(c)}</button>
+              </div>`;
+            }).join("")}
+          </div>
+        </div>
+      `).join("")}
+    </div>
+
+    ${doneMissions.length ? `
+      <h4 class="small muted mb-1" style="text-transform:uppercase">Relatórios Recentes</h4>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Região</th><th>Perfil</th><th>Jogadores Descobertos</th><th>Status</th></tr>
+          ${doneMissions.map(m => {
+            const r = SCOUT_REGIONS[m.regionKey];
+            const t = SCOUT_TIERS[m.tierKey];
+            const names = (m.candidates||[]).map(c=>`${c.name} (${c.pos}, ${c.rating})`).join(" · ");
+            return `<tr>
+              <td><strong>${r ? r.name : m.regionKey}</strong></td>
+              <td class="small">${t ? t.label : m.tierKey}</td>
+              <td class="small muted">${names || 'Disponíveis em Livres'}</td>
+              <td><span class="success font-bold">Concluído</span></td>
+            </tr>`;
+          }).join("")}
+        </table>
+      </div>
+    ` : ''}
+  </div>`;
+}
+
+function openBriberyModal(oppName){
+  const pt = G.teams[G.teamName];
+  const opp = G.teams[oppName];
+  const baseBribe = Math.round(50000 + (opp ? squadStrength(opp.squad) * 350 : 25000));
+  openModal("🤫 Operação Mala Branca / Bastidores", `
+    <p class="mb-2">Você pode usar intermediários para oferecer uma <strong>"Mala Branca" de ${fmtMoney(baseBribe)}</strong> aos atletas e comissão do <strong>${oppName}</strong> para facilitar a sua vitória na próxima partida.</p>
+    <div class="card" style="background:#140808; border-color:var(--danger); margin-bottom:14px">
+      <h4 style="color:var(--danger)">⚠️ Riscos & Consequências</h4>
+      <ul class="small" style="padding-left:16px; line-height:1.6; color:var(--text)">
+        <li>Se funcionar, o adversário perde <strong>~38% de força em campo</strong>.</li>
+        <li>Existe ~18% de risco de o intermediário ser interceptado ou vazarem provas.</li>
+        <li>Em caso de escândalo, seu clube sofre penalidade de <strong>-18% na confiança da diretoria</strong>.</li>
+      </ul>
+    </div>
+    <div class="flex-row" style="justify-content:flex-end">
+      <button class="btn" onclick="closeModal()">Recusar / Jogo Limpo</button>
+      <button class="btn danger font-bold" onclick="executeBribery('${oppName}', ${baseBribe})">Pagar ${fmtMoney(baseBribe)}</button>
+    </div>
+  `, true);
+}
+
+function executeBribery(oppName, cost){
+  const pt = G.teams[G.teamName];
+  if(pt.money < cost){
+    closeModal();
+    showMsg(`Saldo insuficiente em caixa (${fmtMoney(cost)} necessários)!`, "error");
+    return;
+  }
+  pt.money -= cost;
+  const delivered = Math.random() >= 0.15; // 85% de chance de o esquema funcionar
+  const investigated = Math.random() < 0.20; // 20% de risco de investigação policial/STJD
+
+  G.matchBribery = {
+    targetTeam: oppName,
+    cost,
+    delivered,
+    investigated,
+    executed: false
+  };
+  saveGame();
+  closeModal();
+  showMsg(`💼 Pacote financeiro entregue aos intermediários para o jogo contra o ${oppName}!`, "warn");
+  render();
 }
 
 function renderHistoryCard(){
@@ -4479,7 +4854,7 @@ window.addEventListener("keydown", (e) => {
   if(e.key === "a" || e.key === "A"){ e.preventDefault(); autoSelectXI(); showMsg("⚡ Auto XI!"); render(); return; }
 
   if(e.key === "Tab" && currentView === "transfers"){
-    e.preventDefault(); transferSection = (transferSection + 1) % 3; rowIndex = 0; render(); return;
+    e.preventDefault(); transferSection = (transferSection + 1) % 4; rowIndex = 0; render(); return;
   }
 
   if(e.key === "ArrowDown" || e.key === "ArrowUp"){
