@@ -1,4 +1,4 @@
-# 🇧🇷⚽ Astrum Football Manager — Edição Brasil v4.0
+# 🇧🇷⚽ Astrum Football Manager — Edição Brasil v5.0
 
 **Assuma um clube da Série D, monte seu time e leve-o até a elite do futebol brasileiro.** Planeje escalações, negocie jogadores, administre o caixa e o estádio e dispute campeonatos nacionais e continentais. O jogo roda no navegador, funciona offline depois de carregado e não precisa de instalação nem de etapa de build.
 
@@ -158,6 +158,14 @@ O jogo pode ser aberto diretamente por `index.html`. Para instalar como aplicati
 </p>
 
 ## Histórico de versões
+
+### v5.0
+
+- **Correção da Perda de Força e Estafa:** Amortecimento do cálculo de força, redução de desgaste e regeneração ativa pelo DM.
+- **Rede de Scouting Internacional:** Olheiros com viagens de 2 a 3 jogos para Europa, América do Sul e Arábia com perfis Jóia Oculta, Titular ou Estrela.
+- **Arena Multiuso & Espetáculos:** Expansão para eventos corporativos e shows pirotécnicos com caldeirão pré-jogo.
+- **Mala Branca nos Bastidores:** Opção de comprar a derrota do adversário em jogos decisivos (com riscos de denúncia do STJD).
+- **Auto Play AFK Inteligente:** Seleção dinâmica do melhor esquema e rodízio físico automático entre titulares e reservas.
 
 ### v4.0
 

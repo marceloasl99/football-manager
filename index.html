@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="description" content="Manager de futebol brasileiro no navegador: Séries A–D, Copa do Brasil, evolução de elenco e PWA offline.">
 <meta name="format-detection" content="telephone=no">
-<title>Astrum Football Manager — Edição Brasil v4.0</title>
+<title>Astrum Football Manager — Edição Brasil v5.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -527,11 +527,11 @@
 
 <script>
 /* ============================================================
-   ASTRUM FOOTBALL MANAGER — Edição Brasil v3.0
-   Pirâmide completa | Evolução de elenco | Agentes livres | Saves em slots | PWA
+   ASTRUM FOOTBALL MANAGER — Edição Brasil v5.0
+   Scouting Internacional | Mala Branca | Arena Multiuso | Auto Play AFK | PWA
    ============================================================ */
 
-const APP_VERSION = "4.0";
+const APP_VERSION = "5.0";
 const SAVE_VERSION = 3;
 const SAVE_PREFIX = "afm_br_save_";
 const SQUAD_MAX = 30;
@@ -4541,21 +4541,17 @@ function renderTitle(){
 function showAboutModal(){
   openModal(`Astrum FM — Brasil v${APP_VERSION}`,
     "Comande um clube da Série D ao título da Série A!\n\n" +
-    "🆕 NOVIDADES v4.0:\n" +
-    "• 🏟️ Gestão de Estádio 2.0: diagrama visual, batismo da arena, Naming Rights, Camarotes VIP, LED e Base\n" +
-    "• 🧮 Estimativa de Renda: simulador de preço de ingressos, público, sócio-torcedor e projeção anual\n" +
-    "• 🌎 Central de Competições: Séries A–D, Copa do Brasil, Supercopa do Brasil e Copa Continental (Libertadores)\n" +
-    "• 💰 Tabela Completa de Premiações por posição na liga, fases de copa e prêmios individuais (Chuteira/Garçom)\n" +
-    "• 🏆 Nova Sala de Troféus visual e Galeria com 12 Conquistas desbloqueáveis\n\n" +
-    "🆕 RECURSOS v3.0:\n" +
-    "• 🔁 Pirâmide completa: G-4 sobe e Z-4 desce em todas as divisões\n" +
-    "• 📅 Tabelas reais (turno e returno) nas 4 séries\n" +
-    "• 📈 Evolução de elenco: jovens crescem, veteranos declinam e se aposentam; revelações da base\n" +
-    "• 👤 Agentes livres e dispensa de jogadores\n" +
-    "• ⚖️ Equilíbrio tático: goleiro e posições importam; formações com efeito real\n" +
-    "• 💼 Demissão com propostas de outros clubes\n" +
-    "• 💾 3 slots de save, exportar/importar e autosave\n" +
-    "• 📲 PWA instalável com ícones e atualização automática\n\n" +
+    "🆕 NOVIDADES v5.0:\n" +
+    "• ⚡ Correção de Vigor & Força: cálculo amortecido do XI e regeneração do DM eliminam perda crônica de força\n" +
+    "• ✈️ Rede de Scouting Internacional: envie olheiros para Europa, América do Sul e Arábia com delay de viagens real e 3 níveis de atletas\n" +
+    "• 🎪 Arena Multiuso & Shows: novas obras no estádio geram renda corporativa por rodada e espetáculos com caldeirão pré-jogo\n" +
+    "• 🤫 Operação Mala Branca: use intermediários para pagar o adversário para perder e virar partidas decisivas (com riscos do STJD!)\n" +
+    "• 🧠 Auto Play AFK Realista: seleção dinâmica de melhores esquemas e rodízio físico automático para simular temporadas sem estafa\n\n" +
+    "🏆 RECURSOS v4.0:\n" +
+    "• 🏟️ Gestão de Estádio: capacidade, Naming Rights, Camarotes VIP, LED e Base\n" +
+    "• 🧮 Estimativa de Renda: simulador de preço de ingressos, público e projeção anual\n" +
+    "• 🌎 Central de Competições: Séries A–D, Copa do Brasil, Supercopa e Continental (Libertadores)\n" +
+    "• 💰 Premiações completas e Sala de Troféus com conquistas desbloqueáveis\n\n" +
     "📱 INSTALAR COMO APP:\n" +
     "Chrome/Safari → menu → 'Adicionar à Tela Inicial' (precisa de https)\n\n" +
     "⌨️ ATALHOS:\n" +

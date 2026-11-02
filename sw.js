@@ -1,7 +1,7 @@
-/* Astrum FM Brasil v4.0 — Service Worker
+/* Astrum FM Brasil v5.0 — Service Worker
    - Navegação: rede primeiro (pega atualizações), cache como fallback offline
    - Arquivos do app e fontes: stale-while-revalidate */
-const VERSION = "v4.0";
+const VERSION = "v5.0";
 const CACHE = "astrum-fm-" + VERSION;
 const CORE = [
   "./", "./index.html", "./manifest.webmanifest",
