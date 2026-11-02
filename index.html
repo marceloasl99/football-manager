@@ -2498,7 +2498,7 @@ function addFreeAgents(n){
   G.freeAgents = G.freeAgents || [];
   for(let i=0;i<n;i++) G.freeAgents.push(genFreeAgent(clamp(lvl + pick([-1,0,0,0,1]), 0, 3)));
   if(G.freeAgents.length > 30){
-    G.freeAgents.sort((a,b) => (b.fromRelease?1:0) - (a.fromRelease?1:0) || b.rating - a.rating);
+    G.freeAgents.sort((a,b) => ((b.fromScout?2:0)+(b.fromRelease?1:0)) - ((a.fromScout?2:0)+(a.fromRelease?1:0)) || b.rating - a.rating);
     G.freeAgents = G.freeAgents.slice(0,30);
   }
 }
@@ -2510,7 +2510,8 @@ function refreshFreeAgents(){
 }
 function signFreeAgent(id){
   const pt = G.teams[G.teamName];
-  const idx = (G.freeAgents||[]).findIndex(p => p.id === id);
+  let idx = (G.freeAgents||[]).findIndex(p => p.id === id);
+  if(idx < 0) idx = (G.freeAgents||[]).findIndex(p => p.name === id);
   if(idx < 0) return {ok:false, msg:"Jogador não está mais disponível."};
   if(pt.squad.length >= SQUAD_MAX) return {ok:false, msg:`Elenco cheio (máx. ${SQUAD_MAX}). Venda ou dispense alguém.`};
   const p = G.freeAgents[idx];
@@ -3297,11 +3298,14 @@ function toggleSelect(id){
 
 function renderTransfers(){
   const pt = G.teams[G.teamName];
+  const scoutReadyCount = (G.freeAgents||[]).filter(p=>p.fromScout).length;
+  const scoutActiveCount = (G.scoutingMissions||[]).filter(m=>!m.completed).length;
+  const scoutBadge = scoutReadyCount > 0 ? `🎯 ${scoutReadyCount} prontos` : (scoutActiveCount > 0 ? `⏳ ${scoutActiveCount}` : '');
   const tabs = `<div class="flex-row mb">
     <button class="btn ${transferSection===0?'primary':''}" onclick="transferSection=0;rowIndex=0;render()">🛒 Contratar</button>
     <button class="btn ${transferSection===1?'primary':''}" onclick="transferSection=1;rowIndex=0;render()">💰 Vender</button>
     <button class="btn ${transferSection===2?'primary':''}" onclick="transferSection=2;rowIndex=0;render()">👤 Livres (${(G.freeAgents||[]).length})</button>
-    <button class="btn ${transferSection===3?'gold':''}" onclick="transferSection=3;rowIndex=0;render()">✈️ Olheiro Internacional (${(G.scoutingMissions||[]).filter(m=>!m.completed).length})</button>
+    <button class="btn ${transferSection===3?'gold':''}" onclick="transferSection=3;rowIndex=0;render()">✈️ Olheiro Internacional ${scoutBadge ? `(${scoutBadge})` : ''}</button>
     ${G.transferWeek && transferSection < 2 ? `<span class="small muted">Negócios: <strong>${G.transfersDoneThisWindow||0}/5</strong></span>` : ''}
   </div>`;
 
@@ -4329,7 +4333,7 @@ function acceptOffer(club){
   }
 }
 
-function marketActive(){ return !!G && (G.transferWeek || transferSection === 2); }
+function marketActive(){ return !!G && (G.transferWeek || transferSection === 2 || transferSection === 3); }
 function posFilterRow(){
   return `<div class="flex-row mb small">
     ${["ALL","GK","DF","MF","FW"].map(p => `<button class="btn sm ${mktPos===p?'primary':''}" onclick="mktPos='${p}';rowIndex=0;render()">${p==='ALL'?'Todos':p}</button>`).join("")}
@@ -4389,15 +4393,106 @@ function startScoutMission(regionKey, tierKey){
 function renderScoutingSection(){
   const pt = G.teams[G.teamName];
   const activeMissions = (G.scoutingMissions || []).filter(m => !m.completed);
-  const doneMissions = (G.scoutingMissions || []).filter(m => m.completed).slice(0, 4);
+  const doneMissions = (G.scoutingMissions || []).filter(m => m.completed).slice(0, 6);
+
+  // Sincronizar candidatos do olheiro que estejam em freeAgents
+  if(G && Array.isArray(G.scoutingMissions)){
+    G.scoutingMissions.forEach(m => {
+      if(m.completed && Array.isArray(m.candidates)){
+        m.candidates.forEach(c => {
+          const fa = (G.freeAgents || []).find(x => x.name === c.name || x.id === c.id);
+          if(fa){
+            fa.fromScout = true;
+            if(fa.scoutWindowsRemaining == null) fa.scoutWindowsRemaining = 2;
+            if(!fa.scoutLabel){
+              const reg = SCOUT_REGIONS[m.regionKey];
+              const tier = SCOUT_TIERS[m.tierKey];
+              fa.scoutLabel = `${reg ? reg.name : m.regionKey} [${tier ? tier.label : m.tierKey}]`;
+            }
+          }
+        });
+      }
+    });
+  }
+
+  // Candidatos descobertos disponíveis para contratação imediata
+  const scoutedAvailable = (G.freeAgents || []).filter(p => p.fromScout || (G.scoutingMissions||[]).some(m => m.completed && (m.candidates||[]).some(c => c.name === p.name || c.id === p.id)));
+
+  // Atletas trazidos por olheiro que já foram contratados e estão no elenco
+  const scoutedInSquad = (pt.squad || []).filter(p => p.fromScout || (G.scoutingMissions||[]).some(m => (m.candidates||[]).some(c => c.name === p.name || c.id === p.id)));
 
   return `
   <div class="card active-pane">
     <h3>
       <span>✈️ Rede de Scouting Internacional & Prospecção</span>
-      <span class="small muted font-normal">Caixa: ${fmtMoney(pt.money)}</span>
+      <span class="small muted font-normal">Caixa: ${fmtMoney(pt.money)} · Elenco: ${pt.squad.length}/${SQUAD_MAX}</span>
     </h3>
-    <p class="small muted mb-2">Contrate e despache olheiros dedicados para as principais regiões do mundo. Eles realizam viagens de imersão de 2 a 3 jogos e trazem 3 opções com análise aprofundada de potencial diretamente para a sua lista de Agentes Livres.</p>
+    <p class="small muted mb-2">Despache olheiros dedicados para as principais regiões do mundo. Eles realizam viagens de imersão de 2 a 3 jogos e trazem 3 opções com análise aprofundada de potencial que ficam <strong>disponíveis por 2 janelas completas</strong> para você assinar diretamente com um clique!</p>
+
+    ${scoutedAvailable.length ? `
+      <div class="card" style="background:#0c1c2e; border: 2px solid var(--accent); margin-bottom:16px; box-shadow:0 4px 18px rgba(0,0,0,0.4)">
+        <div class="flex-row" style="justify-content:space-between; align-items:center; margin-bottom:8px">
+          <h4 style="color:var(--accent); margin:0; display:flex; align-items:center; gap:8px">
+            <span>🎯 Jogadores Descobertos Prontos para Contratar (${scoutedAvailable.length})</span>
+          </h4>
+          <span class="badge" style="background:var(--gold); color:#000; font-weight:bold; font-size:0.75rem">
+            Disponíveis para Assinar
+          </span>
+        </div>
+        <p class="small muted mb-2">Sem custo de transferência de clube: você paga somente as <strong>Luvas (8% do passe)</strong> para integrá-los de imediato ao seu elenco!</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Pos</th>
+                <th>Nome</th>
+                <th>Idade</th>
+                <th>Nacionalidade</th>
+                <th>Nota</th>
+                <th>Salário</th>
+                <th>Luvas (À Vista)</th>
+                <th>Validade</th>
+                <th>Contratar</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${scoutedAvailable.map((p, idx) => {
+                const bonus = signingBonus(p);
+                const canAfford = pt.money >= bonus;
+                const isFull = pt.squad.length >= SQUAD_MAX;
+                const isLegend = p.rating >= 95;
+                return `
+                <tr class="${idx === rowIndex ? 'kb-focus' : ''}" onclick="rowIndex=${idx};render()">
+                  <td class="pos"><span class="badge" style="font-weight:bold">${p.pos}</span></td>
+                  <td>
+                    <strong>${p.name}</strong>
+                    <div class="small muted">${p.scoutLabel || 'Olheiro Internacional'}</div>
+                  </td>
+                  <td class="mono">${p.age}a</td>
+                  <td><span class="small font-bold" style="color:var(--gold)">🌍 ${p.country || 'Estrangeiro'}</span></td>
+                  <td class="rating ${ratingClass(p.rating)}" style="font-size:1.05rem; font-weight:bold">${p.rating}</td>
+                  <td class="mono">${fmtMoney(p.wage)}</td>
+                  <td class="mono ${canAfford ? 'success' : 'error'} font-bold">${fmtMoney(bonus)}</td>
+                  <td>
+                    <span class="stat-pill info font-bold" style="font-size:0.7rem">
+                      ⏳ ${p.scoutWindowsRemaining != null ? p.scoutWindowsRemaining + ' janela(s)' : '2 janelas'}
+                    </span>
+                  </td>
+                  <td>
+                    <button class="btn sm ${isLegend ? 'gold font-bold' : (canAfford && !isFull ? 'primary' : 'disabled')}"
+                            onclick="event.stopPropagation(); doSign('${p.id}')"
+                            ${!canAfford || isFull ? 'disabled' : ''}
+                            title="${isFull ? 'Elenco cheio (máx. ' + SQUAD_MAX + ')' : (!canAfford ? 'Saldo insuficiente para luvas (' + fmtMoney(bonus) + ')' : 'Assinar contrato agora')}">
+                      ✍️ Contratar (${fmtMoney(bonus)})
+                    </button>
+                  </td>
+                </tr>`;
+              }).join("")}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    ` : ''}
 
     ${activeMissions.length ? `
       <div class="card" style="background:#0b1924; border-color:var(--accent); margin-bottom:14px">
@@ -4407,7 +4502,7 @@ function renderScoutingSection(){
           const t = SCOUT_TIERS[m.tierKey];
           return `<div class="flex-row mb-1" style="justify-content:space-between; align-items:center; border-bottom:1px dashed var(--border); padding-bottom:6px">
             <div>
-              <strong>${r.name}</strong> <span class="badge" style="font-size:0.7rem">${t.label}</span>
+              <strong>${r ? r.name : m.regionKey}</strong> <span class="badge" style="font-size:0.7rem">${t ? t.label : m.tierKey}</span>
               <div class="small muted">Investimento: ${fmtMoney(m.cost)}</div>
             </div>
             <div>
@@ -4415,6 +4510,15 @@ function renderScoutingSection(){
             </div>
           </div>`;
         }).join("")}
+      </div>
+    ` : ''}
+
+    ${scoutedInSquad.length ? `
+      <div class="card" style="background:rgba(16, 185, 129, 0.08); border:1px solid rgba(16, 185, 129, 0.3); margin-bottom:14px; padding:10px 14px">
+        <div class="small">
+          <strong class="success">⭐ Reforços Internacionais Contratados no Elenco (${scoutedInSquad.length}):</strong>
+          <span class="muted">${scoutedInSquad.map(p => `${p.name} (${p.pos}, ${p.rating})`).join(" · ")}</span>
+        </div>
       </div>
     ` : ''}
 
@@ -4443,21 +4547,50 @@ function renderScoutingSection(){
     </div>
 
     ${doneMissions.length ? `
-      <h4 class="small muted mb-1" style="text-transform:uppercase">Relatórios Recentes</h4>
+      <h4 class="small muted mb-1" style="text-transform:uppercase">Relatórios Recentes de Expedições</h4>
       <div class="table-wrap">
         <table>
-          <tr><th>Região</th><th>Perfil</th><th>Jogadores Descobertos</th><th>Status</th></tr>
-          ${doneMissions.map(m => {
-            const r = SCOUT_REGIONS[m.regionKey];
-            const t = SCOUT_TIERS[m.tierKey];
-            const names = (m.candidates||[]).map(c=>`${c.name} (${c.pos}, ${c.rating})`).join(" · ");
-            return `<tr>
-              <td><strong>${r ? r.name : m.regionKey}</strong></td>
-              <td class="small">${t ? t.label : m.tierKey}</td>
-              <td class="small muted">${names || 'Disponíveis em Livres'}</td>
-              <td><span class="success font-bold">Concluído</span></td>
-            </tr>`;
-          }).join("")}
+          <thead>
+            <tr><th>Região</th><th>Perfil</th><th>Opções Trazidas pelo Olheiro</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            ${doneMissions.map(m => {
+              const r = SCOUT_REGIONS[m.regionKey];
+              const t = SCOUT_TIERS[m.tierKey];
+              return `<tr>
+                <td><strong>${r ? r.name : m.regionKey}</strong></td>
+                <td class="small">${t ? t.label : m.tierKey}</td>
+                <td>
+                  <div style="display:flex; flex-direction:column; gap:6px">
+                    ${(m.candidates || []).map(c => {
+                      const inSquad = (pt.squad || []).some(x => x.name === c.name || x.id === c.id);
+                      const inFree = (G.freeAgents || []).find(x => x.name === c.name || x.id === c.id);
+                      if(inSquad){
+                        return `<div class="small"><strong style="color:var(--accent)">${c.name}</strong> (${c.pos}, ${c.rating}) · <span class="success font-bold">✓ Já contratado no elenco</span></div>`;
+                      } else if(inFree){
+                        const bonus = signingBonus(inFree);
+                        const canAfford = pt.money >= bonus;
+                        const isFull = pt.squad.length >= SQUAD_MAX;
+                        return `<div class="flex-row" style="justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:4px 8px; border-radius:4px; gap:8px">
+                          <div class="small">
+                            <strong>${inFree.name}</strong> (${inFree.pos}, nota ${inFree.rating}) · <span class="muted">Luvas: ${fmtMoney(bonus)}</span>
+                          </div>
+                          <button class="btn sm ${canAfford && !isFull ? 'primary' : 'disabled'}"
+                                  onclick="event.stopPropagation(); doSign('${inFree.id}')"
+                                  ${!canAfford || isFull ? 'disabled' : ''}>
+                            ✍️ Contratar
+                          </button>
+                        </div>`;
+                      } else {
+                        return `<div class="small muted">${c.name} (${c.pos}, ${c.rating}) · <em>Período de contratação expirado</em></div>`;
+                      }
+                    }).join("")}
+                  </div>
+                </td>
+                <td><span class="success font-bold">Concluído</span></td>
+              </tr>`;
+            }).join("")}
+          </tbody>
         </table>
       </div>
     ` : ''}
@@ -4921,6 +5054,7 @@ function getMaxRowsForCurrentView(){
   if(currentView === "standings") return TEAMS_PER_DIV;
   if(currentView === "stadium") return STADIUM_UPGRADES.length;
   if(currentView === "transfers"){
+    if(transferSection === 3) return (G.freeAgents || []).filter(p => p.fromScout).length;
     if(transferSection === 2) return (G.freeAgents || []).filter(p => mktPos === "ALL" || p.pos === mktPos).length;
     if(!G.transferWeek) return 0;
     return transferSection === 0 ? filteredTransferList().length : getSortedPlayerSquad().length;
@@ -4928,7 +5062,11 @@ function getMaxRowsForCurrentView(){
   return 0;
 }
 function triggerTransferRowAction(){
-  if(transferSection === 2){
+  if(transferSection === 3){
+    const list = (G.freeAgents || []).filter(p => p.fromScout);
+    const p = list[rowIndex];
+    if(p) doSign(p.id);
+  } else if(transferSection === 2){
     const list = (G.freeAgents || []).filter(p => mktPos === "ALL" || p.pos === mktPos).sort((a,b) => b.rating - a.rating);
     const p = list[rowIndex];
     if(p) doSign(p.id);
